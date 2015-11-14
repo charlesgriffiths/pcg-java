@@ -79,7 +79,7 @@ BigInteger state = BigInteger.ONE, inc = inc128;
   @Override
   public long next64()
   {
-    state = state.multiply( mul128 ).add( inc ).mod( max256 );
+    state = state.multiply( mul128 ).add( inc ).and( max256 );
 
   int rotate = state.shiftRight( 122 ).intValue() & 0x3f;
   BigInteger shifted = state.xor( state.shiftRight( 64 ) );
