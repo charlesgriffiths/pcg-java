@@ -4,6 +4,7 @@ import java.util.Random;
 
 /*
  * PCG Random Number Generation for Java.
+ *  Replacement for java.util.Random
  *
  * Copyright 2015 Charles Griffiths <cs.griffiths@yahoo.com>
  *
@@ -25,66 +26,44 @@ import java.util.Random;
  *       http://www.pcg-random.org
  */
 
-/*
- * This code is derived from the basic C implementation by
- * Melissa O'Neill <oneill@pcg-random.org>, which is derived
- * from the full C implementation, which is in turn derived from the
- * canonical C++ PCG implementation. The C++ version has many additional
- * features and is preferable if you can use C++ in your project.
- */
 
 public class PCGRandom extends Random
 {
-private static final long serialVersionUID = 1L;
-long state = 0, inc = 1;
+private static final long serialVersionUID = 2L;
+protected IPCGKernel kernel;
 
 
   public PCGRandom() {}
+
 
   public PCGRandom( long seed )
   {
     super( seed );
   }
 
-/*
-// *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
-// Licensed under Apache License 2.0 (NO WARRANTY, etc. see website)
 
-typedef struct { uint64_t state;  uint64_t inc; } pcg32_random_t;
-
-uint32_t pcg32_random_r(pcg32_random_t* rng)
-{
-    uint64_t oldstate = rng->state;
-    // Advance internal state
-    rng->state = oldstate * 6364136223846793005ULL + (rng->inc|1);
-    // Calculate output function (XSH RR), uses old state for max ILP
-    uint32_t xorshifted = ((oldstate >> 18u) ^ oldstate) >> 27u;
-    uint32_t rot = oldstate >> 59u;
-    return (xorshifted >> rot) | (xorshifted << ((-rot) & 31));
-}
-*/
-
-
-  protected int next32()
+  public PCGRandom( IPCGKernel kernel )
   {
-    state = state * 6364136223846793005L + inc|1;
-
-    return Integer.rotateRight( (int) (((state >>> 18) ^ state) >>> 27), (int) (state >>> 59) );
+    this.kernel = kernel;
   }
 
 
   @Override
   protected int next( int bits )
   {
-    return (next32() >> (32-bits)) & (int)((1L<<bits) - 1);
+    return (kernel.next32() >> (32-bits)) & (int)((1L<<bits) - 1);
   }
 
 
   @Override
   public void setSeed( long seed )
   {
-    state = seed;
-// System.out.println( "PCGRandom seed set to " + seed );
+    super.setSeed( seed );
+
+    if (null == kernel)
+      kernel = new PCG32();
+
+    kernel.setState( seed );
   }
 }
 
