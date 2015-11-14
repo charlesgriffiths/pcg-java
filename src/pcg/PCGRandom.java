@@ -8,6 +8,14 @@ public class PCGRandom extends Random
 private static final long serialVersionUID = 1L;
 long state = 0, inc = 1;
 
+
+  public PCGRandom() {}
+
+  public PCGRandom( long seed )
+  {
+    super( seed );
+  }
+
 /*
 // *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
 // Licensed under Apache License 2.0 (NO WARRANTY, etc. see website)
@@ -26,10 +34,6 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 }
 */
 
-  protected long next64()
-  {
-    return ((long)next32())<<32 ^ next32();
-  }
 
   protected int next32()
   {
@@ -47,16 +51,10 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 
 
   @Override
-  public long nextLong()
-  {
-    return next64();
-  }
-
-
-  @Override
   public void setSeed( long seed )
   {
     state = seed;
+// System.out.println( "PCGRandom seed set to " + seed );
   }
 }
 

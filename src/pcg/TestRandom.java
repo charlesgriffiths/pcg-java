@@ -9,6 +9,7 @@ public class TestRandom
   {
   Random r = new Random(), pcgr = new PCGRandom();
 
+    new PCGRandom( 1234567890 );
     System.out.println( "booleans" );
     for (int i=0; i<10; i++)
       System.out.println( " " + r.nextBoolean() + " " + pcgr.nextBoolean());
