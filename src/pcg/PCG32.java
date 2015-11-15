@@ -10,12 +10,14 @@ import java.io.Serializable;
  */
 
 
-public class PCG32 extends PCGKernel implements Serializable
+public final class PCG32 extends PCGKernel implements Serializable
 {
 private static final long serialVersionUID = 1L;
 
-public final static long mul64 = 6364136223846793005L, inc64 = 1442695040888963407L;
-long state = 1, inc = inc64;
+public static final long mul64 = 6364136223846793005L, inc64 = 1442695040888963407L;
+
+private long state = 1, inc = inc64;
+private long markstate = 1;
 
 
   public PCG32()
@@ -92,4 +94,44 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 
     return Integer.rotateRight( (int) (((state >>> 18) ^ state) >>> 27), (int) (state >>> 59) );
   }
+
+
+  @Override
+  public boolean markSupported()
+  {
+    return true;
+  }
+
+
+  @Override
+  public void mark( int readlimit )
+  {
+    markstate = state;
+  }
+
+
+  @Override
+  public void reset()
+  {
+    setState( markstate );
+  }
+
+
+  @Override
+  public long skip( long n )
+  {
+    setState( state + stateoffset( n, mul64, inc ));
+
+    return n;
+  }
+
+
+  @Override
+  public boolean seek( long offset )
+  {
+    setState( 1 + stateoffset( offset, mul64, inc ));
+
+    return true;
+  }
 }
+

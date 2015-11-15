@@ -4,7 +4,14 @@ import java.io.Serializable;
 import java.math.BigInteger;
 
 
-public class PCG64 extends PCGKernel implements Serializable
+/*
+ * This code is derived from the canonical C++ PCG implementation by
+ * Melissa O'Neill <oneill@pcg-random.org>. The C++ version has many
+ * additional features and is preferable if you can use C++ in your project.
+ */
+
+
+public final class PCG64 extends PCGKernel implements Serializable
 {
 private static final long serialVersionUID = 1L;
 
@@ -12,7 +19,7 @@ public final static BigInteger mul128 = new BigInteger( "47026247687942121848144
                                inc128 = new BigInteger( "117397592171526113268558934119004209487" ),
                                max128 = BigInteger.valueOf( 2 ).pow( 128 ).subtract( BigInteger.ONE );
 
-BigInteger state = BigInteger.ONE, inc = inc128;
+private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   public PCG64()
@@ -82,7 +89,7 @@ BigInteger state = BigInteger.ONE, inc = inc128;
   int rotate = state.shiftRight( 122 ).intValue();
   BigInteger shifted = state.xor( state.shiftRight( 64 ) );
 
-    return shifted.shiftLeft( rotate ).xor( shifted.shiftRight( 64-rotate ) ).longValue();
+    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue();
   }
 }
 

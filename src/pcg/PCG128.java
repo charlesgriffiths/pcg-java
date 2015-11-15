@@ -4,9 +4,16 @@ import java.io.Serializable;
 import java.math.BigInteger;
 
 
+/*
+ * This code is derived from the canonical C++ PCG implementation by
+ * Melissa O'Neill <oneill@pcg-random.org>. The C++ version has many
+ * additional features and is preferable if you can use C++ in your project.
+ */
+
+
 // TODO: 128 bits of output at once to a stream
 // TODO: adjust values in next64()
-public class PCG128 extends PCGKernel implements Serializable
+public final class PCG128 extends PCGKernel implements Serializable
 {
 private static final long serialVersionUID = 1L;
 
@@ -14,7 +21,7 @@ public final static BigInteger mul128 = new BigInteger( "47026247687942121848144
                                inc128 = new BigInteger( "117397592171526113268558934119004209487" ),
                                max256 = BigInteger.valueOf( 2 ).pow( 256 ).subtract( BigInteger.ONE );
 
-BigInteger state = BigInteger.ONE, inc = inc128;
+private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   public PCG128()
@@ -84,7 +91,7 @@ BigInteger state = BigInteger.ONE, inc = inc128;
   int rotate = state.shiftRight( 122 ).intValue() & 0x3f;
   BigInteger shifted = state.xor( state.shiftRight( 64 ) );
 
-    return shifted.shiftLeft( rotate ).xor( shifted.shiftRight( 64-rotate ) ).longValue();
+    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue();
   }
 }
 
