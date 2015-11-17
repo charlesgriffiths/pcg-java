@@ -87,7 +87,7 @@ RNGStream mark;
   {
   long amount = n;
 
-    while( amount > 0 && position < buffer.length)
+    while( amount > 0 && position < buffer.length )
     {
       amount--;
       position++;
