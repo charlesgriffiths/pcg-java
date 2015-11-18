@@ -84,15 +84,34 @@ protected static final BigInteger mul128 = new BigInteger( "47026247687942121848
 }
 
 
-class LCGSource8 extends LCGSource
+class LCGSourceLong extends LCGSource
 {
 long state, stateMask;
+int shift;
 
 
+  LCGSourceLong( long seed, long mask )
+  {
+    state = seed & mask;
+    stateMask = mask;
+    shift = 0;
+  }
+
+
+  LCGSourceLong( long seed, long mask, int shiftOutput )
+  {
+    state = seed & mask;
+    stateMask = mask;
+    shift = shiftOutput;
+  }
+}
+
+
+final class LCGSource8 extends LCGSourceLong
+{
   LCGSource8()
   {
-    state = 1;
-    stateMask = 0xff;
+    super( 1, 0xff );
   }
 
 
@@ -105,45 +124,116 @@ long state, stateMask;
   @Override
   public byte next8()
   {
-    return 0;
+    next();
+
+    return (byte) (state >> shift);
   }
 
-  
+
+  @Override
+  public short next16()
+  {
+    return (short) (((int)next8() << 8) | ((int)next8() & 0xffff));
+  }
+
+
+  @Override
+  public int next32()
+  {
+    return (short) (((int)next16() << 16) | ((int)next16() & 0xffffffff));
+  }
 }
 
 
-class LCGSource16 extends LCGSource
+final class LCGSource16 extends LCGSourceLong
 {
-long state, stateMask;
+  LCGSource16()
+  {
+    super( 1, 0xffff );
+  }
+
 
   protected void next()
   {
     state = (state * mul16 + inc16) & stateMask;
   }
-  
+
+
+  @Override
+  public byte next8()
+  {
+    return (byte) (next32() >> 24);
+  }
+
+
+  @Override
+  public short next16()
+  {
+    next();
+
+    return (short) (state >> shift);
+  }
+
+
+  @Override
+  public int next32()
+  {
+    return (short) (((int)next16() << 16) | ((int)next16() & 0xffffffff));
+  }
 }
 
 
-class LCGSource32 extends LCGSource
+final class LCGSource32 extends LCGSourceLong
 {
-long state, stateMask;
+  LCGSource32()
+  {
+    super( 1, 0xffffffff );
+  }
+
 
   protected void next()
   {
     state = (state * mul32 + inc32) & stateMask;
   }
-  
+
+
+  @Override
+  public int next32()
+  {
+    next();
+
+    return (int) (state >> shift);
+  }
 }
 
 
-class LCGSource64 extends LCGSource
+final class LCGSource64 extends LCGSourceLong
 {
-long state, stateMask;
+  LCGSource64()
+  {
+    super( 1, 0xffffffffffffffffL );
+  }
+
 
   protected void next()
   {
     state = (state * mul64 + inc64) & stateMask;
   }
 
+
+  @Override
+  public int next32()
+  {
+    return (int) (next64() >> 32);
+  }
+
+
+  @Override
+  public long next64()
+  {
+    next();
+
+    return (long) (state >> shift);
+  }
 }
 
