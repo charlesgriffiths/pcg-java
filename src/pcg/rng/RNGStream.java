@@ -10,7 +10,7 @@ public class RNGStream extends InputStream implements ISeekableRNG
 ISeekableRNG source;
 byte buffer[];
 int position;
-RNGStream mark;
+RNGStream mark; // read only, deep copy to overwrite unless from another mark
 
 
   private RNGStream() {}
@@ -32,10 +32,7 @@ RNGStream mark;
 
   public RNGStream copyTo( RNGStream target )
   {
-    target.source = source.deepCopy();
-    target.buffer = Arrays.copyOf( buffer, buffer.length );
-    target.position = position;
-    target.mark = mark;
+    deepCopy( target );
 
     return target;
   }
@@ -191,10 +188,28 @@ RNGStream mark;
   }
 
 
+  protected void deepCopy( ISeekableRNG target )
+  {
+    if (target instanceof RNGStream)
+    {
+    RNGStream rs = (RNGStream) target;
+    
+      rs.source = source.deepCopy();
+      rs.buffer = Arrays.copyOf( buffer, buffer.length );
+      rs.position = position;
+      rs.mark = mark;
+    }
+  }
+
+
   @Override
   public ISeekableRNG deepCopy()
   {
-    return null;
+  ISeekableRNG target = new RNGStream();
+
+    deepCopy( target );
+
+    return target;
   }
 }
 
