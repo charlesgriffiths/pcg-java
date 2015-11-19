@@ -108,8 +108,8 @@ RNGStream mark; // read only, deep copy to overwrite unless from another mark
   @Override
   public void seek( long position )
   {
-    // TODO Auto-generated method stub
-    
+    source.seek( position / source.blockSize() );
+    skip( position % source.blockSize() );
   }
 
 
