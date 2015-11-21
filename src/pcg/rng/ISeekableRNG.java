@@ -4,7 +4,7 @@ package pcg.rng;
 public interface ISeekableRNG
 {
   public void setState( byte b[] );
-  public void seek( long position );
+  public boolean seek( long position );
   public void advance( long amount );
   public int blockSize();
 
@@ -18,5 +18,6 @@ public interface ISeekableRNG
   public void next( byte b[], int offset, int length );
 
   public ISeekableRNG deepCopy();
+  public void setState( long seed );
 }
 

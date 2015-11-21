@@ -1,7 +1,9 @@
 package pcg;
 
+import pcg.rng.ISeekableRNG;
 
-public interface IPCGKernel
+
+public interface IPCGKernel extends ISeekableRNG
 {
   public void setState( long state );
 

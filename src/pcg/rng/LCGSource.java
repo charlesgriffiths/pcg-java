@@ -52,8 +52,9 @@ protected static final BigInteger mul128 = new BigInteger( "47026247687942121848
 
 
   @Override
-  public void seek( long position )
+  public boolean seek( long position )
   {
+    return false;
   }
 
 
@@ -71,8 +72,9 @@ protected static final BigInteger mul128 = new BigInteger( "47026247687942121848
 
 
   @Override
-  protected void deepCopy( ISeekableRNG target )
+  protected ISeekableRNG deepCopy( ISeekableRNG target )
   {
+    return target;
   }
 
 

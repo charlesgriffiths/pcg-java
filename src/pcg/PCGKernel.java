@@ -3,8 +3,11 @@ package pcg;
 import java.io.InputStream;
 import java.math.BigInteger;
 
+import pcg.rng.ISeekableRNG;
+import pcg.rng.SeekableRNG;
 
-public abstract class PCGKernel extends InputStream implements IPCGKernel
+
+public abstract class PCGKernel extends SeekableRNG implements IPCGKernel
 {
   @Override
   public void setStreamUnique()
@@ -68,30 +71,50 @@ public abstract class PCGKernel extends InputStream implements IPCGKernel
 
 
   @Override
-  public short next16()
+  public void setState( byte b[] )
   {
-    return (short) ((short)next8() << 8 ^ next8());
+    // TODO Auto-generated method stub
+    
   }
 
 
   @Override
-  public int next32()
+  public void advance( long amount )
   {
-    return (int)next16() << 16 ^ next16();
+    // TODO Auto-generated method stub
+    
   }
 
 
   @Override
-  public long next64()
+  public int blockSize()
   {
-    return (long)next32() << 32 ^ next32();
+    // TODO Auto-generated method stub
+    return 0;
   }
 
 
   @Override
-  public int read()
+  public long skipBytes( long amount )
   {
-    return next8();
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+
+  @Override
+  public void next( byte b[] )
+  {
+    // TODO Auto-generated method stub
+    
+  }
+
+
+  @Override
+  public void next( byte b[], int offset, int length )
+  {
+    // TODO Auto-generated method stub
+    
   }
 }
 

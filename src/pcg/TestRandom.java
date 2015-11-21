@@ -1,12 +1,58 @@
 package pcg;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.util.Random;
+
+import pcg.rng.ISeekableRNG;
 
 
 public class TestRandom
 {
   public static void main( String[] args )
+  {
+    writeFile( new Random(), "jr.dat", 1L<<25 );
+//    writeFile( new PCGRandom( new PCG32()), "p32r.dat", 1L<<25 );
+//    writeFile( new PCGRandom( new PCG64()), "p64r.dat", 1L<<25 );
+//    writeFile( new PCGRandom( new PCG128()), "p128r.dat", 1L<<25 );
+  }
+
+
+  public static void writeFile( ISeekableRNG rng, String filename, long ints )
+  {
+    writeFile( new SKRandom( rng ), filename, ints );
+  }
+
+  public static void writeFile( Random rng, String filename, long ints )
+  {
+System.out.println( "Writing " + ints + " ints to file: " + filename );
+    try
+    {
+    RandomAccessFile raf = new RandomAccessFile( filename, "rw" );
+
+      for (long i = 0; i < ints; i++)
+      {
+        raf.writeInt( rng.nextInt() );
+if (0 == (i+1)%1000000) System.out.print( "." );
+      }
+
+      raf.close();
+    }
+    catch (FileNotFoundException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e)
+    {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+System.out.println();
+  }
+
+  public void simpleTests()
   {
   Random r = new Random(), pcgr = new PCGRandom( new PCG64());
 

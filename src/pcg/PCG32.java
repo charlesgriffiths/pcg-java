@@ -2,6 +2,8 @@ package pcg;
 
 import java.io.Serializable;
 
+import pcg.rng.ISeekableRNG;
+
 
 /*
  * This code is derived from the canonical C++ PCG implementation by
@@ -17,7 +19,6 @@ private static final long serialVersionUID = 1L;
 public static final long mul64 = 6364136223846793005L, inc64 = 1442695040888963407L;
 
 private long state = 1, inc = inc64;
-private long markstate = 1;
 
 
   public PCG32()
@@ -97,41 +98,33 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 
 
   @Override
-  public boolean markSupported()
-  {
-    return true;
-  }
-
-
-  @Override
-  public void mark( int readlimit )
-  {
-    markstate = state;
-  }
-
-
-  @Override
-  public void reset()
-  {
-    setState( markstate );
-  }
-
-
-  @Override
-  public long skip( long n )
-  {
-    setState( state + stateoffset( n, mul64, inc ));
-
-    return n;
-  }
-
-
-  @Override
   public boolean seek( long offset )
   {
     setState( 1 + stateoffset( offset, mul64, inc ));
 
     return true;
+  }
+
+
+  @Override
+  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  {
+    if (target instanceof PCG32)
+    {
+    PCG32 pcg = (PCG32) target;
+
+      pcg.state = state;
+      pcg.inc = inc;
+    }
+
+    return target;
+  }
+
+
+  @Override
+  public ISeekableRNG deepCopy()
+  {
+    return deepCopy( new PCG32() );
   }
 }
 

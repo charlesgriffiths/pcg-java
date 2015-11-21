@@ -4,11 +4,11 @@ package pcg.rng;
 public abstract class SeekableRNG implements ISeekableRNG
 {
   @Override
-  abstract public void setState( byte[] b );
+  abstract public void setState( byte b[] );
 
 
   @Override
-  abstract public void seek( long position );
+  abstract public boolean seek( long position );
 
 
   @Override
@@ -57,7 +57,7 @@ public abstract class SeekableRNG implements ISeekableRNG
 
 
   @Override
-  public void next( byte[] b )
+  public void next( byte b[] )
   {
     next( b, 0, b.length );
   }
@@ -74,7 +74,7 @@ public abstract class SeekableRNG implements ISeekableRNG
 
 
   @Override
-  public void next( byte[] b, int offset, int length )
+  public void next( byte b[], int offset, int length )
   {
     while( length >= 8 )
     {
@@ -112,6 +112,21 @@ public abstract class SeekableRNG implements ISeekableRNG
   @Override
   abstract public ISeekableRNG deepCopy();
 
-  abstract protected void deepCopy( ISeekableRNG target );
+  abstract protected ISeekableRNG deepCopy( ISeekableRNG target );
+
+
+  @Override
+  public void setState( long seed )
+  {
+  byte b[] = new byte[8];
+
+    for (int i=0; i<b.length; i++)
+    {
+      b[i] = (byte)(seed >> 8*i);
+    }
+
+    setState( b );
+  }
+
 }
 

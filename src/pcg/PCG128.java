@@ -3,6 +3,8 @@ package pcg;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+import pcg.rng.ISeekableRNG;
+
 
 /*
  * This code is derived from the canonical C++ PCG implementation by
@@ -92,6 +94,28 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
   BigInteger shifted = state.xor( state.shiftRight( 64 ) );
 
     return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue();
+  }
+
+
+  @Override
+  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  {
+    if (target instanceof PCG128)
+    {
+    PCG128 pcg = (PCG128) target;
+
+      pcg.state = state;
+      pcg.inc = inc;
+    }
+
+    return target;
+  }
+
+  
+  @Override
+  public ISeekableRNG deepCopy()
+  {
+    return deepCopy( new PCG128() );
   }
 }
 

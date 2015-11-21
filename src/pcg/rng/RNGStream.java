@@ -99,17 +99,33 @@ RNGStream mark; // read only, deep copy to overwrite unless from another mark
 
 
   @Override
-  public void setState( byte[] b )
+  public void setState( byte b[] )
   {
     source.setState( b );
   }
 
 
   @Override
-  public void seek( long position )
+  public void setState( long seed )
+  {
+  byte b[] = new byte[8];
+
+    for (int i=0; i<b.length; i++)
+    {
+      b[i] = (byte)(seed >> 8*i);
+    }
+
+    setState( b );
+  }
+
+
+  @Override
+  public boolean seek( long position )
   {
     source.seek( position / source.blockSize() );
     skip( position % source.blockSize() );
+
+    return true;
   }
 
 
@@ -181,7 +197,7 @@ RNGStream mark; // read only, deep copy to overwrite unless from another mark
 
 
   @Override
-  public void next( byte[] b, int offset, int length )
+  public void next( byte b[], int offset, int length )
   {
     for (int i=0; i<length; i++)
       b[i+offset] = next8();

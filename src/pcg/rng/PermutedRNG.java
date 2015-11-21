@@ -27,16 +27,16 @@ protected int inputByteAmount, outputByteAmount;
 
 
   @Override
-  public void setState( byte[] b )
+  public void setState( byte b[] )
   {
     source.setState( b );
   }
 
 
   @Override
-  public void seek( long position )
+  public boolean seek( long position )
   {
-    source.seek( position / outputByteAmount * inputByteAmount );
+    return source.seek( position / outputByteAmount * inputByteAmount );
   }
 
 
@@ -48,7 +48,7 @@ protected int inputByteAmount, outputByteAmount;
 
 
   @Override
-  protected void deepCopy( ISeekableRNG target )
+  protected ISeekableRNG deepCopy( ISeekableRNG target )
   {
     if (target instanceof PermutedRNG)
     {
@@ -58,6 +58,8 @@ protected int inputByteAmount, outputByteAmount;
       pr.inputByteAmount = inputByteAmount;
       pr.outputByteAmount = outputByteAmount;
     }
+
+    return target;
   }
 
 }
