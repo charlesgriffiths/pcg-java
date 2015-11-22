@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import pcg.rng.ISeekableRNG;
+import test.Ent;
 
 
 public class TestRandom
@@ -16,7 +17,48 @@ public class TestRandom
 //    writeFile( new Random(), "jr.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG32()), "p32r.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG64()), "p64r.dat", 1L<<25 );
-    writeFile( new PCGRandom( new PCG128()), "p128r.dat", 1L<<25 );
+//    writeFile( new PCGRandom( new PCG128()), "p128r.dat", 1L<<25 );
+    
+    runEnt( new Random( 1 ));
+    runEnt( new PCGRandom( new PCG32()));
+  }
+  
+  public static void runEnt( Random rng )
+  {
+  Ent e1, e2, e3, e4;
+  byte b[] = new byte[1];
+
+    e1 = new Ent();
+    e2 = new Ent();
+    e3 = new Ent();
+    e4 = new Ent();
+
+    for (int i=0; i<1000000; i++)
+    {
+    int datum = rng.nextInt();
+
+      b[0] = (byte) (datum >> 24);
+      e1.addBytes( b );
+
+      b[0] = (byte) (datum >> 16);
+      e2.addBytes( b );
+
+      b[0] = (byte) (datum >> 8);
+      e3.addBytes( b );
+
+      b[0] = (byte) (datum);
+      e4.addBytes( b );
+    }
+
+    e1.finish();
+    e2.finish();
+    e3.finish();
+    e4.finish();
+
+    System.out.println( e1 );
+    System.out.println( e2 );
+    System.out.println( e3 );
+    System.out.println( e4 );
   }
 
 
