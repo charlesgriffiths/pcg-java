@@ -91,7 +91,9 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
     state = state.multiply( mul128 ).add( inc ).and( max256 );
 
   int rotate = state.shiftRight( 122 ).intValue() & 0x3f;
-  BigInteger shifted = state.xor( state.shiftRight( 64 ) );
+  BigInteger shifted = state.xor( state.shiftRight( 128 ) );
+
+    shifted = shifted.xor( shifted.shiftRight( 64 ));
 
     return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue();
   }
