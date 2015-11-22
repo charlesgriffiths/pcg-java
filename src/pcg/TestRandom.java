@@ -13,10 +13,10 @@ public class TestRandom
 {
   public static void main( String[] args )
   {
-    writeFile( new Random(), "jr.dat", 1L<<25 );
+//    writeFile( new Random(), "jr.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG32()), "p32r.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG64()), "p64r.dat", 1L<<25 );
-//    writeFile( new PCGRandom( new PCG128()), "p128r.dat", 1L<<25 );
+    writeFile( new PCGRandom( new PCG128()), "p128r.dat", 1L<<25 );
   }
 
 
