@@ -18,9 +18,12 @@ public class TestRandom
 //    writeFile( new PCGRandom( new PCG32()), "p32r.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG64()), "p64r.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG128()), "p128r.dat", 1L<<25 );
-    
-    runEnt( new Random( 1 ));
-    runEnt( new PCGRandom( new PCG32()));
+
+//  Random r = new Random( 1 );
+  Random r = new PCGRandom( new PCG32());
+
+    while( true )
+      runEnt( r );
   }
   
   public static void runEnt( Random rng )
@@ -33,7 +36,7 @@ public class TestRandom
     e3 = new Ent();
     e4 = new Ent();
 
-    for (int i=0; i<1000000; i++)
+    for (int i=0; i<100000000; i++)
     {
     int datum = rng.nextInt();
 
