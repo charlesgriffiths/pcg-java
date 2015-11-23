@@ -222,9 +222,6 @@ double entropy = 0.0, chisq = 0.0, mean = 0.0, mpcalc = 0.0, scc = 0.0;
   }
 
 
-
-  
-
   public double getEntropy() { return entropy; }
   public double getChiSq() { return chisq; }
   public double getChiSqProb() { return chiSqProb( chisq, 255 ); }

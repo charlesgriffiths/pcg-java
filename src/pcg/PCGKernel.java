@@ -1,9 +1,7 @@
 package pcg;
 
-import java.io.InputStream;
 import java.math.BigInteger;
 
-import pcg.rng.ISeekableRNG;
 import pcg.rng.SeekableRNG;
 
 

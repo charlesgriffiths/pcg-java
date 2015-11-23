@@ -25,7 +25,8 @@ public class TestRandom
     while( true )
       runEnt( r );
   }
-  
+
+
   public static void runEnt( Random rng )
   {
   Ent e1, e2, e3, e4;
