@@ -11,6 +11,7 @@ public class SKRandom extends Random
 private static final long serialVersionUID = 1L;
 
 ISeekableRNG source;
+long seed;
 
 
   public SKRandom()
@@ -28,7 +29,8 @@ ISeekableRNG source;
 
   public SKRandom( ISeekableRNG rng )
   {
-    if (null == source) source = rng;
+    source = rng;
+    source.setState( seed );
   }
 
 
@@ -48,6 +50,7 @@ ISeekableRNG source;
       source = new PCG32();
 
     source.setState( seed );
+    this.seed = seed;
   }
 }
 
