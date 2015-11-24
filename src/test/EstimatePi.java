@@ -6,8 +6,8 @@ public class EstimatePi
 protected int precision;
 protected double circleRadiusSquared;
 
-protected int data[];
-protected int position = 0, count = 0, within = 0;
+protected int data[], position = 0;
+protected long count = 0, within = 0;
 
 
   public EstimatePi()
@@ -26,29 +26,40 @@ protected int position = 0, count = 0, within = 0;
   }
 
 
-  public void addBytes( byte b[] )
+  public void add( byte b[] )
   {
     for (int i=0; i<b.length; i++)
+      add( b[i] );
+  }
+
+  public void add( int d )
+  {
+    add( (byte) (d >> 24) );
+    add( (byte) (d >> 16) );
+    add( (byte) (d >> 8) );
+    add( (byte) d );
+  }
+
+  public void add( byte b )
+  {
+  int datum = b & 0xff;
+
+    data[position++] = datum;
+    if (data.length == position)
     {
-    int datum = b[i] & 0xff;
+      position = 0;
+      count++;
 
-      data[position++] = datum;
-      if (data.length == position)
+    double xpos = 0.0, ypos = 0.0;
+
+      for (int j=0; j<precision; j++)
       {
-        position = 0;
-        count++;
-
-      double xpos = 0.0, ypos = 0.0;
-
-        for (int j=0; j<precision; j++)
-        {
-          xpos = xpos * 256.0 + data[j];
-          ypos = ypos * 256.0 + data[j+precision];
-        }
-
-        if (xpos * xpos + ypos * ypos <= circleRadiusSquared)
-          within++;
+        xpos = xpos * 256.0 + data[j];
+        ypos = ypos * 256.0 + data[j+precision];
       }
+
+      if (xpos * xpos + ypos * ypos <= circleRadiusSquared)
+        within++;
     }
   }
 

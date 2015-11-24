@@ -8,6 +8,7 @@ import java.util.Random;
 
 import pcg.rng.ISeekableRNG;
 import test.Ent;
+import test.EstimatePi;
 
 
 public class TestRandom
@@ -20,10 +21,27 @@ public class TestRandom
 //    writeFile( new PCGRandom( new PCG128()), "p128r.dat", 1L<<25 );
 
 //  Random r = new Random( 1 );
-  Random r = new PCGRandom( new PCG32());
+//  Random r = new PCGRandom( new PCG32());
 
     while( true )
-      runEnt( r );
+      estimatePi( new SKRandom( new PCG32() ), new SKRandom( new PCG32() ));
+//      runEnt( r );
+  }
+
+
+  public static void estimatePi( Random r1, Random r2 )
+  {
+  EstimatePi ep1 = new EstimatePi(4), ep2 = new EstimatePi(3);
+
+    for (int i=0; i<2000000000; i++)
+    {
+      ep1.add( r1.nextInt() );
+      ep2.add( r2.nextInt() );
+      if (0 == i%100000000)
+        System.out.println( "  " + ep1.getEstimate()/Math.PI + "   " + ep2.getEstimate()/Math.PI + "   " + Math.PI );
+    }
+
+System.out.println( "* " + ep1.getEstimate()/Math.PI + "   " + ep2.getEstimate()/Math.PI + "   " + Math.PI );
   }
 
 
