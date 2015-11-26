@@ -8,6 +8,8 @@ ISeekableRNG source;
 RNGBitStream bitStream;
 
 
+  private SkewCorrectionFilter() {}
+
   public SkewCorrectionFilter( ISeekableRNG rng )
   {
     source = rng;
@@ -56,10 +58,9 @@ RNGBitStream bitStream;
       }
       while (0 == datum || 3 == datum);
 
+      ret <<= 1;
       if (2 == datum)
         ret |= 1;
-
-      ret <<= 1;
     }
 
     return ret;
@@ -69,29 +70,39 @@ RNGBitStream bitStream;
   @Override
   public short next16()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return (short) ((next8() << 8) | ((int)next8() & 0xff));
   }
+
 
   @Override
   public int next32()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return (next16() << 16) | ((int)next16() & 0xffff);
   }
+
 
   @Override
   public ISeekableRNG deepCopy()
   {
-    // TODO Auto-generated method stub
-    return null;
+    return deepCopy( new SkewCorrectionFilter() );
   }
+
 
   @Override
   protected ISeekableRNG deepCopy( ISeekableRNG target )
   {
-    // TODO Auto-generated method stub
-    return null;
+    if (target instanceof SkewCorrectionFilter)
+    {
+    SkewCorrectionFilter scf = (SkewCorrectionFilter) target;
+
+      scf.source = source.deepCopy();
+      if (bitStream == source && scf.source instanceof RNGBitStream)
+        scf.bitStream = (RNGBitStream) scf.source;
+      else
+        scf.bitStream = new RNGBitStream( scf.source );
+    }
+
+    return target;
   }
 
 }

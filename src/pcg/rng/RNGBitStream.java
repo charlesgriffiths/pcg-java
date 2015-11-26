@@ -1,5 +1,6 @@
 package pcg.rng;
 
+
 public class RNGBitStream implements ISeekableRNG
 {
 ISeekableRNG source;
@@ -144,8 +145,29 @@ int datum = 0;
   public ISeekableRNG deepCopy()
   {
     // TODO Auto-generated method stub
-    return null;
+    return deepCopy( new RNGBitStream() );
   }
+
+
+  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  {
+    if (target instanceof RNGBitStream)
+    {
+    RNGBitStream rbs = new RNGBitStream();
+
+      rbs.source = source.deepCopy();
+      if (byteStream == source && rbs.source instanceof RNGStream)
+        rbs.byteStream = (RNGStream) rbs.source;
+      else
+        rbs.byteStream = new RNGStream( rbs.source );
+
+      rbs.bitPosition = bitPosition;
+      rbs.datum = datum;
+    }
+
+    return target;
+  }
+
 
   @Override
   public void setState( long seed )
@@ -155,3 +177,4 @@ int datum = 0;
   }
 
 }
+
