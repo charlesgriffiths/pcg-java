@@ -9,6 +9,7 @@ import java.util.Random;
 import pcg.rng.ISeekableRNG;
 import test.Ent;
 import test.EstimatePi;
+import test.EstimatePiPrecise;
 
 
 public class TestRandom
@@ -24,20 +25,20 @@ public class TestRandom
 //  Random r = new PCGRandom( new PCG32());
 
     while( true )
-      estimatePi( new SKRandom( new PCG32() ), new SKRandom( new PCG32() ));
+      estimatePi( new Random( 1 ), new SKRandom( new PCG32() ));
 //      runEnt( r );
   }
 
 
   public static void estimatePi( Random r1, Random r2 )
   {
-  EstimatePi ep1 = new EstimatePi(4), ep2 = new EstimatePi(3);
+  EstimatePiPrecise ep1 = new EstimatePiPrecise(10), ep2 = new EstimatePiPrecise(10);
 
     for (int i=0; i<2000000000; i++)
     {
       ep1.add( r1.nextInt() );
       ep2.add( r2.nextInt() );
-      if (0 == i%100000000)
+      if (0 == i%10000000)
         System.out.println( "  " + ep1.getEstimate()/Math.PI + "   " + ep2.getEstimate()/Math.PI + "   " + Math.PI );
     }
 
