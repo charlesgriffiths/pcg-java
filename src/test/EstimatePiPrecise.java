@@ -6,12 +6,16 @@ import java.math.BigInteger;
 
 public class EstimatePiPrecise
 {
+static private final BigInteger B256 = BigInteger.valueOf( 256 );
+static private final BigDecimal BD4 = BigDecimal.valueOf( 4 );
+
+
 protected int precision;
 protected BigInteger circleRadiusSquared;
 
 protected int data[], position = 0;
 protected long count = 0, within = 0;
-private BigInteger B256 = BigInteger.valueOf( 256 );
+
 
   public EstimatePiPrecise()
   {
@@ -31,7 +35,7 @@ private BigInteger B256 = BigInteger.valueOf( 256 );
   {
     data = new int[precision*2];
 //    circleRadiusSquared = Math.pow( Math.pow( 256.0, precision ) - 1, 2.0 );
-    circleRadiusSquared = B256.pow( precision ).subtract( BigInteger.ONE  ).pow( 2 );
+    circleRadiusSquared = B256.pow( precision ).subtract( BigInteger.ONE ).pow( 2 );
   }
 
 
@@ -76,7 +80,7 @@ private BigInteger B256 = BigInteger.valueOf( 256 );
     }
   }
 
-private BigDecimal BD4 = BigDecimal.valueOf( 4 );
+
   public double getEstimate()
   {
     if (0 == count) return 0.0;

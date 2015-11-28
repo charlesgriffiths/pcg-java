@@ -24,21 +24,57 @@ public class TestRandom
 //  Random r = new Random( 1 );
 //  Random r = new PCGRandom( new PCG32());
 
-    while( true )
-      estimatePi( new Random( 1 ), new SKRandom( new PCG32() ));
+//    while( true )
+//      estimatePi( new SKRandom( new PCG32() ), new SKRandom( new PCG32() ));
 //      runEnt( r );
+//System.out.println( "PCG32" );
+//    estimatePi( new SKRandom( new PCG32() ));
+System.out.println( "java Random" );
+    estimatePi( new Random( 1 ));
+  }
+
+
+  public static void estimatePi( Random r )
+  {
+  long print = 2;
+
+    for (int i=1; i<10; i++)
+    {
+    EstimatePiPrecise ep = new EstimatePiPrecise( i );
+    long j;
+
+System.out.println();
+System.out.println( "" + i + " digits." );
+    
+      print >>= 1;
+
+      for (j=0; j<Math.pow( 256, i ); j++)
+      {
+        for (int k=0; k<i; k++)
+          ep.add( r.nextInt());
+        if (j >= print)
+        {
+System.out.println( ep.getEstimate() + " " + ep.getEstimate()/Math.PI + " " + Math.PI + " "  + j );
+          print <<= 1;
+        }
+      }
+System.out.println( ep.getEstimate() + " " + ep.getEstimate()/Math.PI + " " + Math.PI + " "  + j );
+    }
   }
 
 
   public static void estimatePi( Random r1, Random r2 )
   {
-  EstimatePiPrecise ep1 = new EstimatePiPrecise(10), ep2 = new EstimatePiPrecise(10);
+  int digits1=1, digits2=5;
+  EstimatePiPrecise ep1 = new EstimatePiPrecise(digits1), ep2 = new EstimatePiPrecise(digits2);
 
     for (int i=0; i<2000000000; i++)
     {
-      ep1.add( r1.nextInt() );
-      ep2.add( r2.nextInt() );
-      if (0 == i%10000000)
+      for (int j=0; j<digits1; j++)
+        ep1.add( r1.nextInt() );
+      for (int j=0; j<digits2; j++)
+        ep2.add( r2.nextInt() );
+      if (0 == i%100000000)
         System.out.println( "  " + ep1.getEstimate()/Math.PI + "   " + ep2.getEstimate()/Math.PI + "   " + Math.PI );
     }
 
