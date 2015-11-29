@@ -1,12 +1,13 @@
 package pcg.rng;
 
 
-public class RNGBitStream implements ISeekableRNG
+public class RNGBitStream implements IRNGBitStream
 {
 ISeekableRNG source;
 RNGStream byteStream;
 int bitPosition = 0;
 int datum = 0;
+
 
   private RNGBitStream() {}
   public RNGBitStream( ISeekableRNG rng )
@@ -18,11 +19,13 @@ int datum = 0;
       byteStream = new RNGStream( rng );
   }
 
+
   @Override
   public void setState( byte[] b )
   {
     byteStream.setState( b );
   }
+
 
   @Override
   public boolean seek( long position )
@@ -30,6 +33,8 @@ int datum = 0;
     if (byteStream.seek( position / 8 ))
     {
       bitPosition = (int) (position % 8);
+      datum = byteStream.next8();
+
       return true;
     }
 
@@ -39,8 +44,7 @@ int datum = 0;
   @Override
   public void advance( long amount )
   {
-    // TODO Auto-generated method stub
-
+    // TODO: advance amount of bits or bytes?
   }
 
   @Override
@@ -52,11 +56,14 @@ int datum = 0;
   @Override
   public long skipBytes( long amount )
   {
-    // TODO Auto-generated method stub
-    return 0;
+    byteStream.skipBytes( amount );
+    datum = byteStream.next8();
+
+    return amount;
   }
 
 
+  @Override
   public boolean next()
   {
     if (0 == bitPosition)
@@ -71,6 +78,7 @@ int datum = 0;
   }
 
 
+  @Override
   public int next( int bits )
   {
   int ret = 0;
@@ -85,6 +93,7 @@ int datum = 0;
   }
 
 
+  @Override
   public int nextl( int bits )
   {
   int ret = 0;
@@ -102,44 +111,45 @@ int datum = 0;
   @Override
   public byte next8()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return (byte) next( 8 );
   }
+
 
   @Override
   public short next16()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return (short) next( 16 );
   }
+
 
   @Override
   public int next32()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return next( 32 );
   }
+
 
   @Override
   public long next64()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return ((long) next32() << 32) | ((long) next32() & 0xffffffff);
   }
+
 
   @Override
   public void next( byte[] b )
   {
-    // TODO Auto-generated method stub
-
+    next( b, 0, b.length );
   }
+
 
   @Override
   public void next( byte[] b, int offset, int length )
   {
-    // TODO Auto-generated method stub
-
+    for (int i=0; i<length; i++)
+      b[offset+i] = next8();
   }
+
 
   @Override
   public ISeekableRNG deepCopy()
@@ -172,8 +182,7 @@ int datum = 0;
   @Override
   public void setState( long seed )
   {
-    // TODO Auto-generated method stub
-
+    byteStream.setState( seed );
   }
 
 }
