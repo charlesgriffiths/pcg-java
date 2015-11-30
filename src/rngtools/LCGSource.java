@@ -1,4 +1,4 @@
-package pcg.rng;
+package rngtools;
 
 import java.math.BigInteger;
 

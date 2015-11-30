@@ -1,4 +1,4 @@
-package pcg.rng;
+package rngtools;
 
 
 public class RNGBitStream implements IRNGBitStream
@@ -9,7 +9,7 @@ int bitPosition = 0;
 int datum = 0;
 
 
-  private RNGBitStream() {}
+  protected RNGBitStream() {}
   public RNGBitStream( ISeekableRNG rng )
   {
     source = rng;
@@ -41,17 +41,20 @@ int datum = 0;
     return false;
   }
 
+
   @Override
   public void advance( long amount )
   {
     // TODO: advance amount of bits or bytes?
   }
 
+
   @Override
   public int blockSize()
   {
     return 1;
   }
+
 
   @Override
   public long skipBytes( long amount )
@@ -154,7 +157,6 @@ int datum = 0;
   @Override
   public ISeekableRNG deepCopy()
   {
-    // TODO Auto-generated method stub
     return deepCopy( new RNGBitStream() );
   }
 

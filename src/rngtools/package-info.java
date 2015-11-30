@@ -5,4 +5,4 @@
  * @author Charles
  *
  */
-package pcg.rng;
+package rngtools;

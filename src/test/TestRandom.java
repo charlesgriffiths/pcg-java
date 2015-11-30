@@ -1,4 +1,4 @@
-package pcg;
+package test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -6,10 +6,9 @@ import java.io.RandomAccessFile;
 import java.math.BigInteger;
 import java.util.Random;
 
-import pcg.rng.ISeekableRNG;
-import test.Ent;
-import test.EstimatePi;
-import test.EstimatePiPrecise;
+import pcg.PCG64;
+import pcg.SKRandom;
+import rngtools.ISeekableRNG;
 
 
 public class TestRandom
@@ -155,9 +154,9 @@ System.out.println();
 
   public void simpleTests()
   {
-  Random r = new Random(), pcgr = new PCGRandom( new PCG64());
+  Random r = new Random(), pcgr = new SKRandom( new PCG64());
 
-    new PCGRandom( 1234567890 );
+    new SKRandom( 1234567890 );
     System.out.println( "booleans" );
     for (int i=0; i<10; i++)
       System.out.println( " " + r.nextBoolean() + " " + pcgr.nextBoolean());

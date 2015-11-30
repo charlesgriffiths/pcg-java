@@ -1,6 +1,6 @@
 package pcg;
 
-import pcg.rng.ISeekableRNG;
+import rngtools.ISeekableRNG;
 
 
 public interface IPCGKernel extends ISeekableRNG

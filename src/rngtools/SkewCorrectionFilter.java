@@ -1,4 +1,4 @@
-package pcg.rng;
+package rngtools;
 
 
 // algorithm for skew correction by Von Neumann

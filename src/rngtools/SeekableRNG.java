@@ -1,4 +1,4 @@
-package pcg.rng;
+package rngtools;
 
 
 public abstract class SeekableRNG implements ISeekableRNG

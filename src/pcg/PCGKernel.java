@@ -2,7 +2,7 @@ package pcg;
 
 import java.math.BigInteger;
 
-import pcg.rng.SeekableRNG;
+import rngtools.SeekableRNG;
 
 
 public abstract class PCGKernel extends SeekableRNG implements IPCGKernel

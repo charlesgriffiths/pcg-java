@@ -1,4 +1,4 @@
-package pcg.rng;
+package rngtools;
 
 
 abstract public class PermutedRNG extends SeekableRNG

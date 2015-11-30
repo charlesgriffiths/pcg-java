@@ -1,4 +1,4 @@
-package pcg.rng;
+package rngtools;
 
 
 public interface IRNGBitStream extends ISeekableRNG
