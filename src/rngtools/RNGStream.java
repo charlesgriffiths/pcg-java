@@ -144,6 +144,13 @@ RNGStream mark; // read only, deep copy to overwrite unless from another mark
 
 
   @Override
+  public boolean isSeekable()
+  {
+    return true;
+  }
+
+
+  @Override
   public long skipBytes( long amount )
   {
     return skip( amount );

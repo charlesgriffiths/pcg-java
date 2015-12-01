@@ -57,6 +57,14 @@ int datum = 0;
 
 
   @Override
+  public boolean isSeekable()
+  {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+
+  @Override
   public long skipBytes( long amount )
   {
     byteStream.skipBytes( amount );

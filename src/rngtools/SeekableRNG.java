@@ -16,6 +16,13 @@ public abstract class SeekableRNG implements ISeekableRNG
 
 
   @Override
+  public boolean isSeekable()
+  {
+    return true;
+  }
+
+
+  @Override
   public int blockSize()
   {
     return 4;

@@ -6,6 +6,8 @@ public interface ISeekableRNG
   public void setState( byte b[] );
   public boolean seek( long position );
   public void advance( long amount );
+
+  public boolean isSeekable();
   public int blockSize();
 
   public long skipBytes( long amount );
