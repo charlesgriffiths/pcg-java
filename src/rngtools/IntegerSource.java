@@ -85,6 +85,7 @@ int state;
 
 class BigIntegerRNGSource extends SeekableRNG
 {
+final BigInteger TWO = BigInteger.valueOf( 2 );
 BigInteger state;
 int position = 0;  // an infinitely long period would require a BigInteger position and infinite memory
 
@@ -98,23 +99,64 @@ int position = 0;  // an infinitely long period would require a BigInteger posit
   @Override
   public void setState( byte[] b )
   {
-    
+    state = new BigInteger( b ).abs();
   }
 
 
   @Override
   public boolean seek( long position )
   {
-    // TODO Auto-generated method stub
-    return false;
+    state = BigInteger.ZERO;
+    advance( position );
+
+    return true;
   }
 
 
+  // this version of advance produces many bits while advancing the size of state
+  // quite slowly, but it is only one variation and perhaps not the best
   @Override
   public void advance( long amount )
   {
-    // TODO Auto-generated method stub
-    
+    if (amount > position)
+    {
+      amount -= position;
+    }
+    else
+    {
+      position -= amount;
+      amount = 0;
+    }
+
+    while (amount > 0)
+    {
+    int size = state.bitLength();
+    BigInteger biAmount = BigInteger.valueOf( amount );
+    BigInteger biggerState = TWO.pow( size ), distance = biggerState.subtract( state );
+
+      if (distance.compareTo( biAmount ) >= 0)
+      {
+        amount = 0;
+        state.add( biAmount );
+      }
+      else
+      {
+        amount -= distance.longValue();
+        state = biggerState;
+      }
+    }
+  }
+
+
+  public boolean next()
+  {
+    if (0 == position)
+    {
+      state = state.add( BigInteger.ONE );
+      position = state.bitLength();
+    }
+
+    return state.testBit( position-- );
   }
 
 
@@ -129,8 +171,7 @@ int position = 0;  // an infinitely long period would require a BigInteger posit
   @Override
   public ISeekableRNG deepCopy()
   {
-    // TODO Auto-generated method stub
-    return null;
+    return deepCopy( new BigIntegerRNGSource() );
   }
 
 
