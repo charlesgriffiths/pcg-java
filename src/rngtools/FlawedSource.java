@@ -13,17 +13,18 @@ ISeekableRNG rng;
   }
 
 
-  // a level one flaw has bits in the flawmask always set or always clear, depending on set
-  ISeekableRNG createLevelOne( ISeekableRNG source, int flawmask, boolean set )
+  // a type one flaw has bits in the flawmask always set or always clear, depending on set
+  ISeekableRNG createTypeOne( ISeekableRNG source, int flawmask, boolean set )
   {
-    return null;
+    return new FlawTypeOne( source, flawmask, set );
   }
 
-  // a level two flaw has bitb = bita (true) or bitb = !bita (false), depending on correlation
-  ISeekableRNG createLevelTwo( ISeekableRNG source, int bita, int bitb, boolean correlation )
+  // a type two flaw has bitb = bita (true) or bitb = !bita (false), depending on correlation
+  ISeekableRNG createTypeTwo( ISeekableRNG source, int bita, int bitb, boolean correlation )
   {
-    return null;
+    return new FlawTypeTwo( source, bita, bitb, correlation );
   }
+
 
   @Override
   public void setState( byte[] b )
@@ -62,8 +63,84 @@ ISeekableRNG rng;
   @Override
   protected ISeekableRNG deepCopy( ISeekableRNG target )
   {
-    // TODO Auto-generated method stub
-    return null;
+    // todo: copy rng
+    return target;
   }
 
 }
+
+
+class FlawTypeOne extends FlawedSource
+{
+int mask;
+boolean setAction;
+
+  FlawTypeOne( ISeekableRNG source, int flawmask, boolean set )
+  {
+    super( source );
+
+    mask = flawmask;
+    setAction = set;
+  }
+
+
+  @Override
+  public int next32()
+  {
+  int ret = super.next32();
+
+    if (setAction)
+      ret |= mask;
+    else
+      ret |= ~mask;
+
+    return ret;
+  }
+}
+
+
+class FlawTypeTwo extends FlawedSource
+{
+int bita, bitb;
+boolean correlation;
+
+
+  FlawTypeTwo( ISeekableRNG source, int bita, int bitb, boolean correlation )
+  {
+    super( source );
+
+    this.bita = bita;
+    this.bitb = bitb;
+    this.correlation = correlation;
+  }
+
+
+  boolean getBit( int from, int which )
+  {
+    return 0 != (from & 1<<which);
+  }
+
+
+  int setBit( int from, int which, boolean towhat )
+  {
+    if (towhat)
+      return from | 1<<which;
+
+    return from | ~(1<<which);
+  }
+
+
+  @Override
+  public int next32()
+  {
+  int ret = super.next32();
+
+    if (correlation)
+      ret = setBit( ret, bitb, getBit( ret, bita ));
+    else
+      ret = setBit( ret, bitb, !getBit( ret, bita ));
+
+    return ret;
+  }
+}
+
