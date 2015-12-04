@@ -63,7 +63,13 @@ ISeekableRNG rng;
   @Override
   protected ISeekableRNG deepCopy( ISeekableRNG target )
   {
-    // todo: copy rng
+    if (target instanceof FlawedSource)
+    {
+    FlawedSource fs = (FlawedSource) target;
+
+      fs.rng = rng.deepCopy();
+    }
+
     return target;
   }
 
@@ -75,6 +81,8 @@ class FlawTypeOne extends FlawedSource
 int mask;
 boolean setAction;
 
+
+  protected FlawTypeOne() {}
   FlawTypeOne( ISeekableRNG source, int flawmask, boolean set )
   {
     super( source );
@@ -96,6 +104,29 @@ boolean setAction;
 
     return ret;
   }
+
+
+  @Override
+  public ISeekableRNG deepCopy()
+  {
+    return deepCopy( new FlawTypeOne() );
+  }
+
+
+  @Override
+  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  {
+    super.deepCopy( target );
+    if (target instanceof FlawTypeOne)
+    {
+    FlawTypeOne fto = (FlawTypeOne) target;
+
+      fto.mask = mask;
+      fto.setAction = setAction;
+    }
+
+    return target;
+  }
 }
 
 
@@ -105,6 +136,7 @@ int bita, bitb;
 boolean correlation;
 
 
+  protected FlawTypeTwo() {}
   FlawTypeTwo( ISeekableRNG source, int bita, int bitb, boolean correlation )
   {
     super( source );
@@ -141,6 +173,30 @@ boolean correlation;
       ret = setBit( ret, bitb, !getBit( ret, bita ));
 
     return ret;
+  }
+
+
+  @Override
+  public ISeekableRNG deepCopy()
+  {
+    return deepCopy( new FlawTypeTwo() );
+  }
+
+
+  @Override
+  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  {
+    super.deepCopy( target );
+    if (target instanceof FlawTypeTwo)
+    {
+    FlawTypeTwo ftt = (FlawTypeTwo) target;
+
+      ftt.bita = bita;
+      ftt.bitb = bitb;
+      ftt.correlation = correlation;
+    }
+
+    return target;
   }
 }
 
