@@ -100,7 +100,7 @@ boolean setAction;
     if (setAction)
       ret |= mask;
     else
-      ret |= ~mask;
+      ret &= ~mask;
 
     return ret;
   }
@@ -158,7 +158,7 @@ boolean correlation;
     if (towhat)
       return from | 1<<which;
 
-    return from | ~(1<<which);
+    return from & ~(1<<which);
   }
 
 
