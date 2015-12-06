@@ -3,21 +3,21 @@ package rngtools;
 import java.math.BigInteger;
 
 
-public class IntegerSource extends RNGBitStream
+public class IntegerSourceBitStream extends RNGBitStream
 {
-  protected IntegerSource() {}
-  protected IntegerSource( ISeekableRNG rng )
+  protected IntegerSourceBitStream() {}
+  protected IntegerSourceBitStream( ISeekableRNG rng )
   {
     super( rng );
   }
 
 
-  public IntegerSource create()
+  public IntegerSourceBitStream create()
   {
     return null;
   }
 
-  public IntegerSource create( int maxBits )
+  public IntegerSourceBitStream create( int maxBits )
   {
     return null;
   }

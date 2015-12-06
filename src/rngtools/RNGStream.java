@@ -13,7 +13,7 @@ int position;
 RNGStream mark; // read only, deep copy to overwrite unless from another mark
 
 
-  private RNGStream() {}
+  protected RNGStream() {}
 
 
   public RNGStream( ISeekableRNG rng )
