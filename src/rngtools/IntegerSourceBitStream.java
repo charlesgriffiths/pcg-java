@@ -12,18 +12,157 @@ public class IntegerSourceBitStream extends RNGBitStream
   }
 
 
-  public IntegerSourceBitStream create()
+  public RNGBitStream create()
   {
     return null;
   }
 
-  public IntegerSourceBitStream create( int maxBits )
+  public RNGBitStream create( int maxBits )
   {
+    if (32==maxBits)
+    {
+      return RNGBitStream.create( new IntBitStreamBitwise() );
+    }
     return null;
   }
 }
 
 
+class IntBitStreamEntire extends IntBitStream
+{
+  @Override
+  void advanceState()
+  {
+    state++;
+    position = 31;
+  }
+  
+}
+
+
+class IntBitStreamBitwise extends IntBitStream
+{
+int maxPosition = 1;
+
+  @Override
+  void advanceState()
+  {
+    if (state == (1L<<maxPosition)-1)
+    {
+      state = 0;
+      maxPosition++;
+
+      if (maxPosition > 31)
+      {
+        maxPosition = 1;
+      }
+    }
+    else
+    {
+      state++;
+    }
+
+    position = maxPosition-1;
+  }
+}
+
+
+abstract class ISBitStreamBase implements IBitStream
+{
+  abstract void advanceState();
+
+  public int next( int bits )
+  {
+  int ret = 0;
+  
+    while( 0 < bits-- )
+    {
+      if (next())
+        ret |= 1;
+      ret <<= 1;
+    }
+
+    return ret;
+  }
+
+  @Override
+  public long nextl( int bits )
+  {
+  long ret = 0L;
+
+    while( 0 < bits-- )
+    {
+      if (next())
+        ret |= 1;
+      ret <<= 1;
+    }
+
+    return ret;
+  }
+}
+
+
+abstract class IntBitStream extends ISBitStreamBase
+{
+int state;
+int position;
+
+  IntBitStream()
+  {
+    advanceState();
+    state = 0;
+  }
+
+  @Override
+  public boolean next()
+  {
+    if (position < 0)
+      advanceState();
+
+    return 0 != (state & (1<<position--));
+  }
+}
+
+abstract class BigIntBitStream extends ISBitStreamBase
+{
+BigInteger state;
+int position;
+
+  BigIntBitStream()
+  {
+    advanceState();
+    state = BigInteger.ZERO;
+  }
+
+  @Override
+  public boolean next()
+  {
+    if (position < 0)
+      advanceState();
+
+    return state.testBit( position-- );
+  }
+}
+
+class BigIntBitStreamBitwise extends BigIntBitStream
+{
+int maxPosition = 1;
+
+  @Override
+  void advanceState()
+  {
+    state.add( BigInteger.ONE );
+    if (state.testBit( maxPosition ))
+    {
+      state = BigInteger.ZERO;
+      maxPosition++;
+    }
+
+    position = maxPosition-1;
+  }
+}
+
+/*
 class IntegerRNGSource extends SeekableRNG
 {
 int state;
@@ -80,7 +219,7 @@ int state;
   }
   
 }
-
+*/
 
 
 class BigIntegerRNGSource extends SeekableRNG

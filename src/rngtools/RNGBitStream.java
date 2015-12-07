@@ -19,6 +19,13 @@ int datum = 0;
       byteStream = new RNGStream( rng );
   }
 
+  public static RNGBitStream create( IBitStream bitStream )
+  {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
 
   @Override
   public void setState( byte[] b )
@@ -105,9 +112,9 @@ int datum = 0;
 
 
   @Override
-  public int nextl( int bits )
+  public long nextl( int bits )
   {
-  int ret = 0;
+  long ret = 0;
 
     for (int i=0; i<bits; i++)
     {
