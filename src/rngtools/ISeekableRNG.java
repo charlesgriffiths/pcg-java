@@ -16,6 +16,7 @@ public interface ISeekableRNG
   public short next16();
   public int next32();
   public long next64();
+  public byte[] next();
   public void next( byte b[] );
   public void next( byte b[], int offset, int length );
 
