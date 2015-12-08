@@ -3,7 +3,7 @@ package pcg;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-import rngtools.ISeekableRNG;
+import rngtools.IRNG;
 
 
 /*
@@ -65,6 +65,13 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   @Override
+  public void setState( byte[] b )
+  {
+    this.state = new BigInteger( b );
+  }
+
+
+  @Override
   public void setStream()
   {
     inc = inc128;
@@ -85,40 +92,33 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   @Override
-  public byte next8()
+  public int blockSize()
   {
-    return (byte) (next64() >> 58);
+    return 8;
   }
 
 
   @Override
-  public short next16()
+  public int next( int bits )
   {
-    return (short) (next64() >> 48);
+    return (int) nextl( bits );
   }
 
 
   @Override
-  public int next32()
-  {
-    return (int) (next64() >> 32);
-  }
-
-
-  @Override
-  public long next64()
+  public long nextl( int bits )
   {
     state = state.multiply( mul128 ).add( inc ).and( max128 );
 
   int rotate = state.shiftRight( 122 ).intValue();
   BigInteger shifted = state.xor( state.shiftRight( 64 ) );
 
-    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue();
+    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue() >>> (64-bits);
   }
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  protected IRNG deepCopy( IRNG target )
   {
     if (target instanceof PCG64)
     {
@@ -133,7 +133,7 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
     return deepCopy( new PCG64() );
   }

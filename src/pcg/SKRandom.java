@@ -2,7 +2,7 @@ package pcg;
 
 import java.util.Random;
 
-import rngtools.ISeekableRNG;
+import rngtools.RNG;
 
 
 /*
@@ -29,7 +29,7 @@ public class SKRandom extends Random
 {
 private static final long serialVersionUID = 1L;
 
-ISeekableRNG source;
+RNG source;
 long seed;
 
 
@@ -46,7 +46,7 @@ long seed;
   }
 
 
-  public SKRandom( ISeekableRNG rng )
+  public SKRandom( RNG rng )
   {
     source = rng;
     source.setState( seed );
@@ -56,7 +56,7 @@ long seed;
   @Override
   protected int next( int bits )
   {
-    return (source.next32() >> (32-bits)) & (int)((1L<<bits) - 1);
+    return source.next( bits );
   }
 
 

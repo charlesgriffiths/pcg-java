@@ -2,7 +2,7 @@ package pcg;
 
 import java.io.Serializable;
 
-import rngtools.ISeekableRNG;
+import rngtools.IRNG;
 
 
 /*
@@ -62,6 +62,13 @@ private long state = 1, inc = inc64;
 
 
   @Override
+  public void setState( byte[] b )
+  {
+    setState( get( b, 0, b.length ));
+  }
+
+
+  @Override
   public void setStream()
   {
     setStream( inc64 );
@@ -76,18 +83,10 @@ private long state = 1, inc = inc64;
 
 
   @Override
-  public byte next8()
+  public int blockSize()
   {
-    return (byte) (next32() >> 24);
+    return 4;
   }
-
-
-  @Override
-  public short next16()
-  {
-    return (short) (next32() >> 16);
-  }
-
 
 /* This output function in java is meant to serve the same purpose as the following:
  * 
@@ -111,11 +110,21 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 */
 
   @Override
-  public int next32()
+  public int next( int bits )
   {
     state = state * mul64 + inc;
 
-    return Integer.rotateRight( (int) (((state >>> 18) ^ state) >>> 27), (int) (state >>> 59) );
+    return Integer.rotateRight( (int) (((state >>> 18) ^ state) >>> 27), (int) (state >>> 59) ) >>> (32-bits);
+  }
+
+
+  @Override
+  public long nextl( int bits )
+  {
+    if (bits <= 32)
+      return next( bits ) | 0L;
+
+    return ((nextl( 32 ) << 32) | nextl( 32 )) >>> (64-bits);
   }
 
 
@@ -129,7 +138,7 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  protected IRNG deepCopy( IRNG target )
   {
     if (target instanceof PCG32)
     {
@@ -144,7 +153,7 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
     return deepCopy( new PCG32() );
   }

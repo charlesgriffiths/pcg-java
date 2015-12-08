@@ -8,19 +8,25 @@ abstract public class BitStream implements IBitStream
   }
 
 
-  public static IBitStream create( ISeekableRNG rng )
+
+  public static BitStream create( IBitStream bitStream )
   {
-    return create( ByteStream.create( rng ));
+    return new BitStreamFromBitStream( bitStream );
   }
 
 
-  public static IBitStream create( IByteStream byteStream )
+  public static BitStream create( IByteStream byteStream )
   {
     return new BitStreamFromByteStream( byteStream );
   }
 
 
-  @Override
+  public static BitStream create( IRNG rng )
+  {
+    return create( ByteStream.create( rng ));
+  }
+
+
   public int next( int bits )
   {
   int ret = 0;
@@ -35,7 +41,6 @@ abstract public class BitStream implements IBitStream
   }
 
 
-  @Override
   public long nextl( int bits )
   {
   long ret = 0;
@@ -51,13 +56,30 @@ abstract public class BitStream implements IBitStream
 
 
   @Override
-  public IBitStream split()
+  public IBitStream deepCopy()
   {
     return this;
   }
 
 }
 
+
+class BitStreamFromBitStream extends BitStream
+{
+IBitStream bitStream;
+
+  BitStreamFromBitStream( IBitStream bitStream )
+  {
+    this.bitStream = bitStream;
+  }
+
+
+  @Override
+  public boolean next()
+  {
+    return bitStream.next();
+  }
+}
 
 
 class BitStreamFromByteStream extends BitStream

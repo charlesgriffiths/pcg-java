@@ -3,7 +3,7 @@ package rngtools;
 import java.math.BigInteger;
 
 
-abstract public class LCGSource extends SeekableRNG
+abstract public class LCGSource extends RNG
 {
 // constants from https://github.com/imneme/pcg-cpp/blob/master/include/pcg_random.hpp
 protected static final int mul8 = 141, inc8 = 77;
@@ -65,28 +65,21 @@ protected static final BigInteger mul128 = new BigInteger( "47026247687942121848
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
     return null;
   }
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  protected IRNG deepCopy( IRNG target )
   {
     return target;
-  }
-
-
-  @Override
-  public int next32()
-  {
-    return 0;
   }
 }
 
 
-class LCGSourceLong extends LCGSource
+abstract class LCGSourceLong extends LCGSource
 {
 long state, stateMask;
 int shift;

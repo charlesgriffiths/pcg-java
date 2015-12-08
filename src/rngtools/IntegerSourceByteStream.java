@@ -1,13 +1,9 @@
 package rngtools;
 
 
-public class IntegerSourceByteStream extends RNGStream
+public class IntegerSourceByteStream extends ByteStream
 {
   protected IntegerSourceByteStream() {}
-  protected IntegerSourceByteStream( ISeekableRNG rng )
-  {
-    super( rng );
-  }
 
 
   public IntegerSourceByteStream create()
@@ -17,6 +13,22 @@ public class IntegerSourceByteStream extends RNGStream
 
   public IntegerSourceByteStream create( int maxBytes )
   {
+    return null;
+  }
+
+
+  @Override
+  public int next()
+  {
+    // TODO Auto-generated method stub
+    return 0;
+  }
+
+
+  @Override
+  public IByteStream deepCopy()
+  {
+    // TODO Auto-generated method stub
     return null;
   }
 }

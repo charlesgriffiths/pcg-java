@@ -1,12 +1,10 @@
 package pcg;
 
-import rngtools.ISeekableRNG;
+import rngtools.IRNG;
 
 
-public interface IPCGKernel extends ISeekableRNG
+public interface IPCGKernel extends IRNG
 {
-  public void setState( long state );
-
   public void setStream();
   public void setStreamUnique();
   public void setStream( long inc );

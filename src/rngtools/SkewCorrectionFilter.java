@@ -4,14 +4,14 @@ package rngtools;
 // algorithm for skew correction by Von Neumann
 public class SkewCorrectionFilter extends BitStream
 {
-IBitStream bitStream;
+BitStream bitStream;
 
 
   protected SkewCorrectionFilter() {}
 
-  public SkewCorrectionFilter( IBitStream ibs )
+  public SkewCorrectionFilter( BitStream bitStream )
   {
-    bitStream = ibs;
+    this.bitStream = bitStream;
   }
 
 

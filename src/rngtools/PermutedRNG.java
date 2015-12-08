@@ -1,16 +1,16 @@
 package rngtools;
 
 
-abstract public class PermutedRNG extends SeekableRNG
+abstract public class PermutedRNG extends RNG
 {
-protected ISeekableRNG source;
+protected IRNG source;
 protected int inputByteAmount, outputByteAmount;
 
 
   protected PermutedRNG() {}
 
 
-  protected PermutedRNG( SeekableRNG rng, int in, int out )
+  protected PermutedRNG( RNG rng, int in, int out )
   {
     source = rng;
     inputByteAmount = in;
@@ -18,7 +18,7 @@ protected int inputByteAmount, outputByteAmount;
   }
 
 
-  public static PermutedRNG createXORShift( SeekableRNG rng, int in, int out )
+  public static PermutedRNG createXORShift( RNG rng, int in, int out )
   {
     if (8 == in && 4 == out) return new XORShiftRNG_64_32( rng, in, out );
 
@@ -48,7 +48,17 @@ protected int inputByteAmount, outputByteAmount;
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  public long nextl( int bits )
+  {
+    if (bits <= 32)
+      return next( bits ) | 0L;
+
+    return ((nextl( 32 ) << 32) | nextl( 32 )) >>> (64-bits);
+  }
+
+
+  @Override
+  protected IRNG deepCopy( IRNG target )
   {
     if (target instanceof PermutedRNG)
     {
@@ -70,16 +80,23 @@ class XORShiftRNG_64_32 extends PermutedRNG
   private XORShiftRNG_64_32() {}
 
 
-  XORShiftRNG_64_32( SeekableRNG rng, int in, int out )
+  XORShiftRNG_64_32( RNG rng, int in, int out )
   {
     super( rng, in, out );
   }
 
 
   @Override
-  public int next32()
+  public int blockSize()
   {
-  long input = source.next64();
+    return 4;
+  }
+
+
+  @Override
+  public int next( int bits )
+  {
+  long input = source.nextl( 64 );
 
 //this particular 64b to 32b shift-rotation from https://github.com/imneme/pcg-cpp/blob/master/include/pcg_random.hpp
     return Integer.rotateRight( (int) (((input >>> 18) ^ input) >>> 27), (int) (input >>> 59) );
@@ -87,9 +104,9 @@ class XORShiftRNG_64_32 extends PermutedRNG
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
-  ISeekableRNG target = new XORShiftRNG_64_32();
+  IRNG target = new XORShiftRNG_64_32();
     
     deepCopy( target );
 

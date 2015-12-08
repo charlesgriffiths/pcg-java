@@ -2,10 +2,10 @@ package pcg;
 
 import java.math.BigInteger;
 
-import rngtools.SeekableRNG;
+import rngtools.RNG;
 
 
-public abstract class PCGKernel extends SeekableRNG implements IPCGKernel
+public abstract class PCGKernel extends RNG implements IPCGKernel
 {
   @Override
   public void setStreamUnique()
@@ -15,9 +15,9 @@ public abstract class PCGKernel extends SeekableRNG implements IPCGKernel
 
 
   @Override
-  public boolean seek( long offset )
+  public boolean isSeekable()
   {
-    return false;
+    return true;
   }
 
 
@@ -65,54 +65,6 @@ public abstract class PCGKernel extends SeekableRNG implements IPCGKernel
     }
 
     return accmult.add( accinc );
-  }
-
-
-  @Override
-  public void setState( byte b[] )
-  {
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public void advance( long amount )
-  {
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public int blockSize()
-  {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-
-  @Override
-  public long skipBytes( long amount )
-  {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-
-  @Override
-  public void next( byte b[] )
-  {
-    // TODO Auto-generated method stub
-    
-  }
-
-
-  @Override
-  public void next( byte b[], int offset, int length )
-  {
-    // TODO Auto-generated method stub
-    
   }
 }
 

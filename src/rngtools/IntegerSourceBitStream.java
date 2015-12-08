@@ -3,26 +3,31 @@ package rngtools;
 import java.math.BigInteger;
 
 
-public class IntegerSourceBitStream extends RNGBitStream
+abstract public class IntegerSourceBitStream extends BitStream
 {
   protected IntegerSourceBitStream() {}
-  protected IntegerSourceBitStream( ISeekableRNG rng )
-  {
-    super( rng );
-  }
 
 
-  public RNGBitStream create()
+  public static BitStream create()
   {
     return null;
   }
 
-  public RNGBitStream create( int maxBits )
+
+  public static BitStream create( int maxBits )
   {
     if (32==maxBits)
     {
-      return RNGBitStream.create( new IntBitStreamBitwise() );
+      return BitStream.create( new IntBitStreamBitwise() );
     }
+    return null;
+  }
+
+
+  @Override
+  public IBitStream deepCopy()
+  {
+    // TODO Auto-generated method stub
     return null;
   }
 }
@@ -35,6 +40,13 @@ class IntBitStreamEntire extends IntBitStream
   {
     state++;
     position = 31;
+  }
+
+  @Override
+  public IBitStream deepCopy()
+  {
+    // TODO Auto-generated method stub
+    return null;
   }
   
 }
@@ -64,45 +76,18 @@ int maxPosition = 1;
 
     position = maxPosition-1;
   }
-}
 
-
-abstract class ISBitStreamBase implements IBitStream
-{
-  abstract void advanceState();
-
-  public int next( int bits )
-  {
-  int ret = 0;
-  
-    while( 0 < bits-- )
-    {
-      if (next())
-        ret |= 1;
-      ret <<= 1;
-    }
-
-    return ret;
-  }
 
   @Override
-  public long nextl( int bits )
+  public IBitStream deepCopy()
   {
-  long ret = 0L;
-
-    while( 0 < bits-- )
-    {
-      if (next())
-        ret |= 1;
-      ret <<= 1;
-    }
-
-    return ret;
+    // TODO Auto-generated method stub
+    return null;
   }
 }
 
 
-abstract class IntBitStream extends ISBitStreamBase
+abstract class IntBitStream extends BitStream
 {
 int state;
 int position;
@@ -112,6 +97,10 @@ int position;
     advanceState();
     state = 0;
   }
+
+
+  abstract void advanceState();
+
 
   @Override
   public boolean next()
@@ -123,7 +112,7 @@ int position;
   }
 }
 
-abstract class BigIntBitStream extends ISBitStreamBase
+abstract class BigIntBitStream extends BitStream
 {
 BigInteger state;
 int position;
@@ -134,6 +123,10 @@ int position;
     state = BigInteger.ZERO;
   }
 
+
+  abstract void advanceState();
+
+
   @Override
   public boolean next()
   {
@@ -143,6 +136,7 @@ int position;
     return state.testBit( position-- );
   }
 }
+
 
 class BigIntBitStreamBitwise extends BigIntBitStream
 {
@@ -159,6 +153,13 @@ int maxPosition = 1;
     }
 
     position = maxPosition-1;
+  }
+
+  @Override
+  public IBitStream deepCopy()
+  {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
 
@@ -221,7 +222,7 @@ int state;
 }
 */
 
-
+/*
 class BigIntegerRNGSource extends SeekableRNG
 {
 final BigInteger TWO = BigInteger.valueOf( 2 );
@@ -308,18 +309,18 @@ int position = 0;  // an infinitely long period would require a BigInteger posit
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
     return deepCopy( new BigIntegerRNGSource() );
   }
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  protected IRNG deepCopy( IRNG target )
   {
     // TODO Auto-generated method stub
     return null;
   }
   
 }
-
+*/

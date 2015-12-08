@@ -2,25 +2,26 @@ package rngtools;
 
 
 // this class accepts an rng and adds a flaw
-public class FlawedSource extends SeekableRNG
+abstract public class FlawedSource extends RNG
 {
-ISeekableRNG rng;
+IRNG rng;
 
   protected FlawedSource() {}
-  protected FlawedSource( ISeekableRNG source )
+  protected FlawedSource( IRNG source )
   {
     rng = source;
   }
 
 
   // a type one flaw has bits in the flawmask always set or always clear, depending on set
-  ISeekableRNG createTypeOne( ISeekableRNG source, int flawmask, boolean set )
+  public static IRNG create( IRNG source, int flawmask, boolean set )
   {
     return new FlawTypeOne( source, flawmask, set );
   }
 
+
   // a type two flaw has bitb = bita (true) or bitb = !bita (false), depending on correlation
-  ISeekableRNG createTypeTwo( ISeekableRNG source, int bita, int bitb, boolean correlation )
+  public static IRNG create( IRNG source, int bita, int bitb, boolean correlation )
   {
     return new FlawTypeTwo( source, bita, bitb, correlation );
   }
@@ -39,29 +40,42 @@ ISeekableRNG rng;
     return rng.seek( position );
   }
 
+
   @Override
   public void advance( long amount )
   {
     rng.advance( amount );
   }
 
+
   @Override
-  public int next32()
+  public boolean isSeekable()
   {
-    // TODO Auto-generated method stub
-    return 0;
+    return rng.isSeekable();
   }
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public int blockSize()
   {
-    return deepCopy( new FlawedSource() );
+    return 4;
   }
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  public long nextl( int bits )
+  {
+    if (bits <= 32)
+      return next( bits ) | 0L;
+
+    return ((nextl( 32 ) << 32) | nextl( 32 )) >>> (64-bits);
+  }
+
+
+  abstract public IRNG deepCopy();
+
+
+  protected IRNG deepCopy( IRNG target )
   {
     if (target instanceof FlawedSource)
     {
@@ -83,7 +97,7 @@ boolean setAction;
 
 
   protected FlawTypeOne() {}
-  FlawTypeOne( ISeekableRNG source, int flawmask, boolean set )
+  FlawTypeOne( IRNG source, int flawmask, boolean set )
   {
     super( source );
 
@@ -93,28 +107,28 @@ boolean setAction;
 
 
   @Override
-  public int next32()
+  public int next( int bits )
   {
-  int ret = super.next32();
+  int ret = rng.next( bits );
 
     if (setAction)
       ret |= mask;
     else
       ret &= ~mask;
 
-    return ret;
+    return ret & ((1<<bits) - 1);
   }
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
     return deepCopy( new FlawTypeOne() );
   }
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  protected IRNG deepCopy( IRNG target )
   {
     super.deepCopy( target );
     if (target instanceof FlawTypeOne)
@@ -137,7 +151,7 @@ boolean correlation;
 
 
   protected FlawTypeTwo() {}
-  FlawTypeTwo( ISeekableRNG source, int bita, int bitb, boolean correlation )
+  FlawTypeTwo( IRNG source, int bita, int bitb, boolean correlation )
   {
     super( source );
 
@@ -163,28 +177,28 @@ boolean correlation;
 
 
   @Override
-  public int next32()
+  public int next( int bits )
   {
-  int ret = super.next32();
+  int ret = rng.next( bits );
 
     if (correlation)
       ret = setBit( ret, bitb, getBit( ret, bita ));
     else
       ret = setBit( ret, bitb, !getBit( ret, bita ));
 
-    return ret;
+    return ret & ((1 << bits) - 1);
   }
 
 
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
     return deepCopy( new FlawTypeTwo() );
   }
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  protected IRNG deepCopy( IRNG target )
   {
     super.deepCopy( target );
     if (target instanceof FlawTypeTwo)

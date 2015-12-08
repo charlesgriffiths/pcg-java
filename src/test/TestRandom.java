@@ -8,7 +8,7 @@ import java.util.Random;
 
 import pcg.PCG64;
 import pcg.SKRandom;
-import rngtools.ISeekableRNG;
+import rngtools.RNG;
 
 
 public class TestRandom
@@ -120,7 +120,7 @@ System.out.println( "* " + ep1.getEstimate()/Math.PI + "   " + ep2.getEstimate()
   }
 
 
-  public static void writeFile( ISeekableRNG rng, String filename, long ints )
+  public static void writeFile( RNG rng, String filename, long ints )
   {
     writeFile( new SKRandom( rng ), filename, ints );
   }

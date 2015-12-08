@@ -3,7 +3,7 @@ package pcg;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-import rngtools.ISeekableRNG;
+import rngtools.IRNG;
 
 
 /*
@@ -35,14 +35,14 @@ import rngtools.ISeekableRNG;
  */
 
 
-// TODO: 128 bits of output at once to a stream
-// TODO: adjust values in next64()
+// TODO: better mul128 and inc128?
 public final class PCG128 extends PCGKernel implements Serializable
 {
 private static final long serialVersionUID = 1L;
 
 public final static BigInteger mul128 = new BigInteger( "47026247687942121848144207491837523525" ),
                                inc128 = new BigInteger( "117397592171526113268558934119004209487" ),
+                               max128 = BigInteger.valueOf( 2 ).pow( 128 ).subtract( BigInteger.ONE ),
                                max256 = BigInteger.valueOf( 2 ).pow( 256 ).subtract( BigInteger.ONE );
 
 private BigInteger state = BigInteger.ONE, inc = inc128;
@@ -67,6 +67,13 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   @Override
+  public void setState( byte[] b )
+  {
+    this.state = new BigInteger( b );
+  }
+
+
+  @Override
   public void setStream()
   {
     inc = inc128;
@@ -87,42 +94,60 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   @Override
-  public byte next8()
+  public int blockSize()
   {
-    return (byte) (next64() >> 58);
+    return 16;
   }
 
 
   @Override
-  public short next16()
+  public int next( int bits )
   {
-    return (short) (next64() >> 48);
+    return (int) nextl( bits );
   }
 
 
   @Override
-  public int next32()
+  public long nextl( int bits )
   {
-    return (int) (next64() >> 32);
+  BigInteger bi = next128();
+  
+    return bi.xor( bi.shiftRight( 64 )).longValue() >>> (64-bits);
   }
 
 
-  @Override
-  public long next64()
+  protected BigInteger next128()
   {
     state = state.multiply( mul128 ).add( inc ).and( max256 );
 
   int rotate = state.shiftRight( 122 ).intValue() & 0x3f;
   BigInteger shifted = state.xor( state.shiftRight( 128 ) );
+  
+    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate )).and( max128 );
+  }
 
-    shifted = shifted.xor( shifted.shiftRight( 64 ));
-
-    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue();
+  
+  @Override
+  public byte[] next()
+  {
+    return next128().toByteArray();
   }
 
 
   @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
+  public void next( byte b[], int offset, int length )
+  {
+    if (length == blockSize())
+    {
+      System.arraycopy( next(), 0, b, offset, length );
+    }
+    else
+      super.next( b, offset, length );
+  }
+
+
+  @Override
+  protected IRNG deepCopy( IRNG target )
   {
     if (target instanceof PCG128)
     {
@@ -137,7 +162,7 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
   
   @Override
-  public ISeekableRNG deepCopy()
+  public IRNG deepCopy()
   {
     return deepCopy( new PCG128() );
   }
