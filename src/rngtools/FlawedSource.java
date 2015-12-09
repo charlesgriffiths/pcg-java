@@ -62,16 +62,6 @@ IRNG rng;
   }
 
 
-  @Override
-  public long nextl( int bits )
-  {
-    if (bits <= 32)
-      return next( bits ) | 0L;
-
-    return ((nextl( 32 ) << 32) | nextl( 32 )) >>> (64-bits);
-  }
-
-
   abstract public IRNG deepCopy();
 
 
@@ -107,16 +97,16 @@ boolean setAction;
 
 
   @Override
-  public int next( int bits )
+  public long nextBlock()
   {
-  int ret = rng.next( bits );
+  int ret = rng.next( 32 );
 
     if (setAction)
       ret |= mask;
     else
       ret &= ~mask;
 
-    return ret & ((1<<bits) - 1);
+    return ret & 0xffffffff;
   }
 
 
@@ -177,16 +167,16 @@ boolean correlation;
 
 
   @Override
-  public int next( int bits )
+  public long nextBlock()
   {
-  int ret = rng.next( bits );
+  int ret = rng.next( 32 );
 
     if (correlation)
       ret = setBit( ret, bitb, getBit( ret, bita ));
     else
       ret = setBit( ret, bitb, !getBit( ret, bita ));
 
-    return ret & ((1 << bits) - 1);
+    return ret & 0xffffffff;
   }
 
 

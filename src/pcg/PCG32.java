@@ -110,21 +110,11 @@ uint32_t pcg32_random_r(pcg32_random_t* rng)
 */
 
   @Override
-  public int next( int bits )
+  protected long nextBlock()
   {
     state = state * mul64 + inc;
 
-    return Integer.rotateRight( (int) (((state >>> 18) ^ state) >>> 27), (int) (state >>> 59) ) >>> (32-bits);
-  }
-
-
-  @Override
-  public long nextl( int bits )
-  {
-    if (bits <= 32)
-      return next( bits ) | 0L;
-
-    return ((nextl( 32 ) << 32) | nextl( 32 )) >>> (64-bits);
+    return Integer.rotateRight( (int) (((state >>> 18) ^ state) >>> 27), (int) (state >>> 59) );
   }
 
 

@@ -94,7 +94,7 @@ class XORShiftRNG_64_32 extends PermutedRNG
 
 
   @Override
-  public int next( int bits )
+  public long nextBlock()
   {
   long input = source.nextl( 64 );
 

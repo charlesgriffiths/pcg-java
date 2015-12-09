@@ -99,21 +99,14 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   @Override
-  public int next( int bits )
-  {
-    return (int) nextl( bits );
-  }
-
-
-  @Override
-  public long nextl( int bits )
+  protected long nextBlock()
   {
     state = state.multiply( mul128 ).add( inc ).and( max128 );
 
   int rotate = state.shiftRight( 122 ).intValue();
   BigInteger shifted = state.xor( state.shiftRight( 64 ) );
 
-    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue() >>> (64-bits);
+    return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate ) ).longValue();
   }
 
 

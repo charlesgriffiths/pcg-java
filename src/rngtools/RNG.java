@@ -44,10 +44,28 @@ abstract public class RNG implements IRNG
   }
 
 
+  abstract protected long nextBlock();
+
   @Override
   public int next( int bits )
   {
     return (int) nextl( bits );
+  }
+
+
+  @Override
+  public long nextl( int bits )
+  {
+  int i, bitsPerBlock = 8 * blockSize();
+  long ret = 0L;
+
+    for (i=0; i<bits; i+=bitsPerBlock)
+    {
+      ret <<= bitsPerBlock;
+      ret |= nextBlock();
+    }
+
+    return ret >>> (Math.min( 64, i )-bits);
   }
 
 
@@ -72,14 +90,27 @@ abstract public class RNG implements IRNG
   @Override 
   public void next( byte b[], int offset, int length )
   {
-  int amount = Math.max( 8, blockSize());
+  int amount = blockSize();
 
-    while( length > 0 )
+    if (amount <= 8)
     {
-      put( nextl( 8*amount ), b, offset, Math.min( length, amount ));
+      while( length > 0 )
+      {
+        put( nextl( 8*amount ), b, offset, Math.min( length, amount ));
 
-      offset += amount;
-      length -= amount;
+        offset += amount;
+        length -= amount;
+      }
+    }
+    else
+    {
+      while( length > 0 )
+      {
+        System.arraycopy( next(), 0, b, offset, Math.min( length, amount ));
+
+        offset += amount;
+        length -= amount;
+      }
     }
   }
 
@@ -142,26 +173,9 @@ IByteStream byteStream;
 
 
   @Override
-  public long nextl( int bits )
+  protected long nextBlock()
   {
-  int i;
-  long ret = 0L;
-
-    for (i=0; i<bits; i+=8)
-    {
-      ret <<= 8;
-      ret |= byteStream.next();
-    }
-
-    return ret >>> (i-bits);
-  }
-
-
-  @Override
-  public void next( byte b[], int offset, int length )
-  {
-    for (int i=0; i<length; i++)
-      b[offset+i] = (byte) byteStream.next();
+    return byteStream.next();
   }
 
 

@@ -101,18 +101,18 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
 
   @Override
-  public int next( int bits )
+  protected long nextBlock()
   {
-    return (int) nextl( bits );
+  BigInteger bi = next128();
+
+    return bi.xor( bi.shiftRight( 64 )).longValue();
   }
 
 
   @Override
-  public long nextl( int bits )
+  public byte[] next()
   {
-  BigInteger bi = next128();
-  
-    return bi.xor( bi.shiftRight( 64 )).longValue() >>> (64-bits);
+    return next128().toByteArray();
   }
 
 
@@ -122,27 +122,8 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
 
   int rotate = state.shiftRight( 122 ).intValue() & 0x3f;
   BigInteger shifted = state.xor( state.shiftRight( 128 ) );
-  
+
     return shifted.shiftRight( rotate ).xor( shifted.shiftLeft( 64-rotate )).and( max128 );
-  }
-
-  
-  @Override
-  public byte[] next()
-  {
-    return next128().toByteArray();
-  }
-
-
-  @Override
-  public void next( byte b[], int offset, int length )
-  {
-    if (length == blockSize())
-    {
-      System.arraycopy( next(), 0, b, offset, length );
-    }
-    else
-      super.next( b, offset, length );
   }
 
 
@@ -160,7 +141,7 @@ private BigInteger state = BigInteger.ONE, inc = inc128;
     return target;
   }
 
-  
+
   @Override
   public IRNG deepCopy()
   {

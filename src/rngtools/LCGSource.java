@@ -110,32 +110,18 @@ final class LCGSource8 extends LCGSourceLong
   }
 
 
-  protected void next()
+  @Override
+  public int blockSize()
+  {
+    return 1;
+  }
+
+
+  @Override
+  protected long nextBlock()
   {
     state = (state * mul8 + inc8) & stateMask;
-  }
-
-
-  @Override
-  public byte next8()
-  {
-    next();
-
-    return (byte) (state >> shift);
-  }
-
-
-  @Override
-  public short next16()
-  {
-    return (short) (((int)next8() << 8) | ((int)next8() & 0xffff));
-  }
-
-
-  @Override
-  public int next32()
-  {
-    return (short) (((int)next16() << 16) | ((int)next16() & 0xffffffff));
+    return (state >>> shift) & 0xff;
   }
 }
 
@@ -148,32 +134,18 @@ final class LCGSource16 extends LCGSourceLong
   }
 
 
-  protected void next()
+  @Override
+  public int blockSize()
+  {
+    return 2;
+  }
+
+
+  @Override
+  protected long nextBlock()
   {
     state = (state * mul16 + inc16) & stateMask;
-  }
-
-
-  @Override
-  public byte next8()
-  {
-    return (byte) (next32() >> 24);
-  }
-
-
-  @Override
-  public short next16()
-  {
-    next();
-
-    return (short) (state >> shift);
-  }
-
-
-  @Override
-  public int next32()
-  {
-    return (short) (((int)next16() << 16) | ((int)next16() & 0xffffffff));
+    return (state >>> shift) & 0xffff;
   }
 }
 
@@ -186,18 +158,18 @@ final class LCGSource32 extends LCGSourceLong
   }
 
 
-  protected void next()
+  @Override
+  public int blockSize()
   {
-    state = (state * mul32 + inc32) & stateMask;
+    return 4;
   }
 
 
   @Override
-  public int next32()
+  protected long nextBlock()
   {
-    next();
-
-    return (int) (state >> shift);
+    state = (state * mul32 + inc32) & stateMask;
+    return (state >>> shift) & 0xffffffff;
   }
 }
 
@@ -210,25 +182,18 @@ final class LCGSource64 extends LCGSourceLong
   }
 
 
-  protected void next()
+  @Override
+  public int blockSize()
+  {
+    return 8;
+  }
+
+
+  @Override
+  protected long nextBlock()
   {
     state = (state * mul64 + inc64) & stateMask;
-  }
-
-
-  @Override
-  public int next32()
-  {
-    return (int) (next64() >> 32);
-  }
-
-
-  @Override
-  public long next64()
-  {
-    next();
-
-    return (long) (state >> shift);
+    return (state >>> shift) & 0xffffffffffffffffL;
   }
 }
 
