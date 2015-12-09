@@ -15,6 +15,7 @@ public class TestRandom
 {
   public static void main( String[] args )
   {
+    simpleTests();
 //    writeFile( new Random(), "jr.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG32()), "p32r.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG64()), "p64r.dat", 1L<<25 );
@@ -152,7 +153,7 @@ if (0 == (i+1)%1000000) System.out.print( "." );
 System.out.println();
   }
 
-  public void simpleTests()
+  public static void simpleTests()
   {
   Random r = new Random(), pcgr = new SKRandom( new PCG64());
 

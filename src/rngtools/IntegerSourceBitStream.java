@@ -33,23 +33,7 @@ abstract public class IntegerSourceBitStream extends BitStream
 }
 
 
-class IntBitStreamEntire extends IntBitStream
-{
-  @Override
-  void advanceState()
-  {
-    state++;
-    position = 31;
-  }
 
-  @Override
-  public IBitStream deepCopy()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
-  
-}
 
 
 class IntBitStreamBitwise extends IntBitStream
