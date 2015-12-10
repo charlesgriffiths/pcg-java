@@ -22,14 +22,6 @@ abstract public class IntegerSourceBitStream extends BitStream
     }
     return null;
   }
-
-
-  @Override
-  public IBitStream deepCopy()
-  {
-    // TODO Auto-generated method stub
-    return null;
-  }
 }
 
 
@@ -147,64 +139,7 @@ int maxPosition = 1;
   }
 }
 
-/*
-class IntegerRNGSource extends SeekableRNG
-{
-int state;
 
-  @Override
-  public void setState( byte[] b )
-  {
-    state = 0;
-    for (int i=0; i<b.length && i<4; i++)
-      state = state<<8 | (b[i] & 0xff);
-  }
-
-
-  @Override
-  public boolean seek( long position )
-  {
-    state = (int) position;
-    return true;
-  }
-
-
-  @Override
-  public void advance( long amount )
-  {
-    seek( state + amount );
-  }
-
-  
-  @Override
-  public int next32()
-  {
-    return state++;
-  }
-
-
-  @Override
-  public ISeekableRNG deepCopy()
-  {
-    return deepCopy( new IntegerRNGSource() );
-  }
-
-
-  @Override
-  protected ISeekableRNG deepCopy( ISeekableRNG target )
-  {
-    if (target instanceof IntegerRNGSource)
-    {
-    IntegerRNGSource ret = (IntegerRNGSource) target;
-
-      ret.state = state;
-    }
-
-    return target;
-  }
-  
-}
-*/
 
 /*
 class BigIntegerRNGSource extends SeekableRNG
@@ -214,27 +149,7 @@ BigInteger state;
 int position = 0;  // an infinitely long period would require a BigInteger position and infinite memory
 
 
-  BigIntegerRNGSource()
-  {
-    state = BigInteger.ZERO;
-  }
-
-
-  @Override
-  public void setState( byte[] b )
-  {
-    state = new BigInteger( b ).abs();
-  }
-
-
-  @Override
-  public boolean seek( long position )
-  {
-    state = BigInteger.ZERO;
-    advance( position );
-
-    return true;
-  }
+  
 
 
   // this version of advance produces many bits while advancing the size of state
@@ -281,29 +196,6 @@ int position = 0;  // an infinitely long period would require a BigInteger posit
     }
 
     return state.testBit( position-- );
-  }
-
-
-  @Override
-  public int next32()
-  {
-    // TODO Auto-generated method stub
-    return 0;
-  }
-
-
-  @Override
-  public IRNG deepCopy()
-  {
-    return deepCopy( new BigIntegerRNGSource() );
-  }
-
-
-  @Override
-  protected IRNG deepCopy( IRNG target )
-  {
-    // TODO Auto-generated method stub
-    return null;
   }
   
 }

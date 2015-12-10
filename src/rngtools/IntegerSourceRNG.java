@@ -172,6 +172,8 @@ long state;
 
 class BigIntegerRNGEntire extends IntegerSourceRNG
 {
+static final BigInteger TWO = BigInteger.valueOf( 2 );
+
 int stateSize;
 BigInteger state, max;
 
@@ -180,7 +182,7 @@ BigInteger state, max;
   {
     this.stateSize = stateSize;
     state = BigInteger.ONE;
-    max = BigInteger.valueOf( 2 ).pow( stateSize ).subtract( BigInteger.ONE );
+    max = TWO.pow( stateSize ).subtract( BigInteger.ONE );
   }
 
   BigIntegerRNGEntire( int stateSize, BigInteger state, BigInteger max )
@@ -194,7 +196,7 @@ BigInteger state, max;
   @Override
   public void setState( byte[] b )
   {
-    state = new BigInteger( b ).and( max );
+    state = new BigInteger( b ).and( max ).abs();
   }
 
 
