@@ -20,17 +20,57 @@ abstract public class IntegerSourceBitStream extends BitStream
     {
       return BitStream.create( new IntBitStreamBitwise() );
     }
+
     return null;
   }
 }
 
 
+abstract class IntBitStream extends BitStream
+{
+int state;
+int position;
 
+  IntBitStream()
+  {
+    advanceState();
+    state = 0;
+  }
+
+
+  protected IntBitStream( int state, int position )
+  {
+    this.state = state;
+    this.position = position;
+  }
+
+
+  abstract void advanceState();
+
+
+  @Override
+  public boolean next()
+  {
+    if (position < 0)
+      advanceState();
+
+    return 0 != (state & (1<<position--));
+  }
+}
 
 
 class IntBitStreamBitwise extends IntBitStream
 {
-int maxPosition = 1;
+int maxPosition;
+
+  IntBitStreamBitwise() {}
+
+  protected IntBitStreamBitwise( int state, int position, int maxPosition )
+  {
+    super( state, position );
+    this.maxPosition = maxPosition;
+  }
+
 
   @Override
   void advanceState()
@@ -57,36 +97,10 @@ int maxPosition = 1;
   @Override
   public IBitStream deepCopy()
   {
-    // TODO Auto-generated method stub
-    return null;
+    return new IntBitStreamBitwise( state, position, maxPosition );
   }
 }
 
-
-abstract class IntBitStream extends BitStream
-{
-int state;
-int position;
-
-  IntBitStream()
-  {
-    advanceState();
-    state = 0;
-  }
-
-
-  abstract void advanceState();
-
-
-  @Override
-  public boolean next()
-  {
-    if (position < 0)
-      advanceState();
-
-    return 0 != (state & (1<<position--));
-  }
-}
 
 abstract class BigIntBitStream extends BitStream
 {
@@ -97,6 +111,13 @@ int position;
   {
     advanceState();
     state = BigInteger.ZERO;
+  }
+
+
+  protected BigIntBitStream( BigInteger state, int position )
+  {
+    this.state = state;
+    this.position = position;
   }
 
 
@@ -118,6 +139,14 @@ class BigIntBitStreamBitwise extends BigIntBitStream
 {
 int maxPosition = 1;
 
+
+  BigIntBitStreamBitwise( BigInteger state, int position, int maxPosition )
+  {
+    super( state, position );
+    this.maxPosition = maxPosition;
+  }
+
+
   @Override
   void advanceState()
   {
@@ -131,11 +160,11 @@ int maxPosition = 1;
     position = maxPosition-1;
   }
 
+
   @Override
   public IBitStream deepCopy()
   {
-    // TODO Auto-generated method stub
-    return null;
+    return new BigIntBitStreamBitwise( state, position, maxPosition );
   }
 }
 
@@ -187,16 +216,7 @@ int position = 0;  // an infinitely long period would require a BigInteger posit
   }
 
 
-  public boolean next()
-  {
-    if (0 == position)
-    {
-      state = state.add( BigInteger.ONE );
-      position = state.bitLength();
-    }
-
-    return state.testBit( position-- );
-  }
+  
   
 }
 */

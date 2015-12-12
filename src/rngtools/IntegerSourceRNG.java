@@ -24,7 +24,7 @@ abstract public class IntegerSourceRNG extends RNG
         return new LongRNGEntire( 0L );
     }
 
-    return null;
+    return new BigIntegerRNGEntire( stateSize );
   }
 
 
@@ -185,6 +185,7 @@ BigInteger state, max;
     max = TWO.pow( stateSize ).subtract( BigInteger.ONE );
   }
 
+
   BigIntegerRNGEntire( int stateSize, BigInteger state, BigInteger max )
   {
     this.stateSize = stateSize;
@@ -212,7 +213,7 @@ BigInteger state, max;
   {
   long ret = state.longValue();
 
-    state.add( BigInteger.ONE );
+    state = state.add( BigInteger.ONE ).and( max );
 
     return ret;
   }
@@ -223,7 +224,7 @@ BigInteger state, max;
   {
   byte ret[] = state.toByteArray();
 
-    state.add( BigInteger.ONE );
+    state = state.add( BigInteger.ONE ).and( max );
 
     return ret;
   }
