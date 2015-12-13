@@ -147,6 +147,12 @@ abstract public class RNG implements IRNG
   }
 
 
+  @Override
+  public void perturbState( byte b[] )
+  {
+  }
+
+
   protected IRNG deepCopy( IRNG target )
   {
     // TODO Auto-generated method stub
@@ -187,9 +193,8 @@ IByteStream byteStream;
 
 
   @Override
-  public void setState( byte[] b )
+  public void setState( byte b[] )
   {
-//    byteStream.setState( b );
   }
 }
 

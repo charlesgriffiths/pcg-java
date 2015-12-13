@@ -25,5 +25,6 @@ public interface IRNG
 
   public IRNG deepCopy();
   public void setState( byte b[] );
+  public void perturbState( byte b[] );
 }
 
