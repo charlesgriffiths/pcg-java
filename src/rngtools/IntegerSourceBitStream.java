@@ -8,17 +8,17 @@ abstract public class IntegerSourceBitStream extends BitStream
   protected IntegerSourceBitStream() {}
 
 
-  public static BitStream create()
+  public static IntegerSourceBitStream create()
   {
     return null;
   }
 
 
-  public static BitStream create( int maxBits )
+  public static IntegerSourceBitStream create( int maxBits )
   {
     if (32==maxBits)
     {
-      return BitStream.create( new IntBitStreamBitwise() );
+      return new IntBitStreamBitwise();
     }
 
     return null;
@@ -26,7 +26,7 @@ abstract public class IntegerSourceBitStream extends BitStream
 }
 
 
-abstract class IntBitStream extends BitStream
+abstract class IntBitStream extends IntegerSourceBitStream
 {
 int state;
 int position;
@@ -102,19 +102,19 @@ int maxPosition;
 }
 
 
-abstract class BigIntBitStream extends BitStream
+abstract class BigIntegerBitStream extends IntegerSourceBitStream
 {
 BigInteger state;
 int position;
 
-  BigIntBitStream()
+  BigIntegerBitStream()
   {
     advanceState();
     state = BigInteger.ZERO;
   }
 
 
-  protected BigIntBitStream( BigInteger state, int position )
+  protected BigIntegerBitStream( BigInteger state, int position )
   {
     this.state = state;
     this.position = position;
@@ -135,12 +135,12 @@ int position;
 }
 
 
-class BigIntBitStreamBitwise extends BigIntBitStream
+class BigIntegerBitStreamBitwise extends BigIntegerBitStream
 {
 int maxPosition = 1;
 
 
-  BigIntBitStreamBitwise( BigInteger state, int position, int maxPosition )
+  BigIntegerBitStreamBitwise( BigInteger state, int position, int maxPosition )
   {
     super( state, position );
     this.maxPosition = maxPosition;
@@ -164,7 +164,7 @@ int maxPosition = 1;
   @Override
   public IBitStream deepCopy()
   {
-    return new BigIntBitStreamBitwise( state, position, maxPosition );
+    return new BigIntegerBitStreamBitwise( state, position, maxPosition );
   }
 }
 
