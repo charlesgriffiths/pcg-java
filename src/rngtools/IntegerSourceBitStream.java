@@ -28,8 +28,9 @@ abstract public class IntegerSourceBitStream extends BitStream
 
 abstract class IntBitStream extends IntegerSourceBitStream
 {
-int state;
-int position;
+protected int state;
+protected int position;
+
 
   IntBitStream()
   {
@@ -61,7 +62,8 @@ int position;
 
 class IntBitStreamBitwise extends IntBitStream
 {
-int maxPosition;
+protected int maxPosition;
+
 
   IntBitStreamBitwise() {}
 
@@ -104,8 +106,9 @@ int maxPosition;
 
 abstract class BigIntegerBitStream extends IntegerSourceBitStream
 {
-BigInteger state;
-int position;
+protected BigInteger state;
+protected int position;
+
 
   BigIntegerBitStream()
   {
@@ -137,7 +140,7 @@ int position;
 
 class BigIntegerBitStreamBitwise extends BigIntegerBitStream
 {
-int maxPosition = 1;
+protected int maxPosition = 1;
 
 
   BigIntegerBitStreamBitwise( BigInteger state, int position, int maxPosition )

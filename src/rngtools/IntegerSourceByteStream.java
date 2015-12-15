@@ -10,8 +10,9 @@ abstract public class IntegerSourceByteStream extends ByteStream
 
   public static IntegerSourceByteStream create()
   {
-    return null;
+    return new BigIntegerByteStream();
   }
+
 
   public static IntegerSourceByteStream create( int maxBytes )
   {
@@ -22,9 +23,9 @@ abstract public class IntegerSourceByteStream extends ByteStream
 
 class BigIntegerByteStream extends IntegerSourceByteStream
 {
-BigInteger state;
-byte data[];
-int position;
+protected BigInteger state;
+protected byte data[];
+protected int position;
 
 
   BigIntegerByteStream()

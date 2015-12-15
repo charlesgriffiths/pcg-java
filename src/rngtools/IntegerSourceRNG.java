@@ -6,7 +6,6 @@ import java.math.BigInteger;
 abstract public class IntegerSourceRNG extends RNG
 {
 
-
   public static IntegerSourceRNG create( int stateSize )
   {
     switch( stateSize )
@@ -26,15 +25,12 @@ abstract public class IntegerSourceRNG extends RNG
 
     return new BigIntegerRNGEntire( stateSize );
   }
-
-
-
 }
 
 
 class ByteRNGEntire extends IntegerSourceRNG
 {
-byte state;
+protected byte state;
 
 
   ByteRNGEntire( byte state ) { this.state = state; }
@@ -68,7 +64,7 @@ byte state;
 
 class ShortRNGEntire extends IntegerSourceRNG
 {
-short state;
+protected short state;
 
 
   ShortRNGEntire( short state ) { this.state = state; }
@@ -102,7 +98,7 @@ short state;
 
 class IntRNGEntire extends IntegerSourceRNG
 {
-int state;
+protected int state;
 
 
   IntRNGEntire( int state ) { this.state = state; }
@@ -136,7 +132,7 @@ int state;
 
 class LongRNGEntire extends IntegerSourceRNG
 {
-long state;
+protected long state;
 
 
   LongRNGEntire( long state ) { this.state = state; }
@@ -174,8 +170,8 @@ class BigIntegerRNGEntire extends IntegerSourceRNG
 {
 static final BigInteger TWO = BigInteger.valueOf( 2 );
 
-int stateSize;
-BigInteger state, max;
+protected int stateSize;
+protected BigInteger state, max;
 
 
   BigIntegerRNGEntire( int stateSize )
