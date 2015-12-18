@@ -15,7 +15,8 @@ public class TestRandom
 {
   public static void main( String[] args )
   {
-    simpleTests();
+    TestBitStream.testIntegerSourceBitStream();
+//    simpleTests();
 //    writeFile( new Random(), "jr.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG32()), "p32r.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG64()), "p64r.dat", 1L<<25 );
@@ -29,8 +30,8 @@ public class TestRandom
 //      runEnt( r );
 //System.out.println( "PCG32" );
 //    estimatePi( new SKRandom( new PCG32() ));
-System.out.println( "java Random" );
-    estimatePi( new Random( 1 ));
+//System.out.println( "java Random" );
+//    estimatePi( new Random( 1 ));
   }
 
 

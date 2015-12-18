@@ -10,7 +10,7 @@ abstract public class IntegerSourceBitStream extends BitStream
 
   public static IntegerSourceBitStream create()
   {
-    return null;
+    return new BigIntegerBitStreamBitwise();
   }
 
 
@@ -106,14 +106,14 @@ protected int maxPosition;
 
 abstract class BigIntegerBitStream extends IntegerSourceBitStream
 {
-protected BigInteger state;
-protected int position;
+protected BigInteger state = BigInteger.ZERO;
+protected int position = 0;
 
 
   BigIntegerBitStream()
   {
-    advanceState();
-    state = BigInteger.ZERO;
+//    advanceState();
+//    state = BigInteger.ZERO;
   }
 
 
@@ -142,6 +142,8 @@ class BigIntegerBitStreamBitwise extends BigIntegerBitStream
 {
 protected int maxPosition = 1;
 
+  BigIntegerBitStreamBitwise() {}
+  
 
   BigIntegerBitStreamBitwise( BigInteger state, int position, int maxPosition )
   {
@@ -153,7 +155,7 @@ protected int maxPosition = 1;
   @Override
   void advanceState()
   {
-    state.add( BigInteger.ONE );
+    state = state.add( BigInteger.ONE );
     if (state.testBit( maxPosition ))
     {
       state = BigInteger.ZERO;

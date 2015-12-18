@@ -33,8 +33,8 @@ abstract public class BitStream implements IBitStream
 
     for (int i=0; i<bits; i++)
     {
-      if (next()) ret |= 1;
       ret <<= 1;
+      if (next()) ret |= 1;
     }
 
     return ret;
@@ -47,8 +47,8 @@ abstract public class BitStream implements IBitStream
 
     for (int i=0; i<bits; i++)
     {
-      if (next()) ret |= 1;
       ret <<= 1;
+      if (next()) ret |= 1;
     }
 
     return ret;

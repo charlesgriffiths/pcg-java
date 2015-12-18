@@ -14,17 +14,20 @@ public class TestBitStream
 
   public static void testIntegerSourceBitStream()
   {
+//  BitStream bs = IntegerSourceBitStream.create();
   BitStream bs = IntegerSourceBitStream.create( 32 );
   
     for (int i=1; i<32; i++)
     {
+System.out.print( "" + i + ": " );
       for (long j=0; j<(1L<<i); j++)
       {
+//System.out.println( "["+i+","+j+"]" );
       long got = bs.nextl( i );
       
         if (j == got)
         {
-          System.out.print( " " + got + "," );
+          if (j < 100) System.out.print( " " + got + "," );
         }
         else
         {
