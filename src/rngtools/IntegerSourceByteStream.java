@@ -51,6 +51,7 @@ protected int position;
       state = state.add( BigInteger.ONE );
       data = state.toByteArray();
       position = 0;
+      if (0 == data[0]) position = 1;
     }
 
     return data[position++] & 0xff;

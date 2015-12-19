@@ -23,6 +23,20 @@ abstract public class ByteStream implements IByteStream
   }
 
 
+  public long next( int byteCount )
+  {
+  long ret = 0;
+
+    for (int i=0; i<byteCount; i++)
+    {
+      ret <<= 8;
+      ret |= next();
+    }
+
+    return ret;
+  }
+
+
   public void next( byte b[] )
   {
     next( b, 0, b.length );

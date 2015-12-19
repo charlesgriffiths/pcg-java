@@ -15,7 +15,8 @@ public class TestRandom
 {
   public static void main( String[] args )
   {
-    TestBitStream.testIntegerSourceBitStream();
+    TestByteStream.testIntegerSourceByteStream();
+//    TestBitStream.intSource();
 //    simpleTests();
 //    writeFile( new Random(), "jr.dat", 1L<<25 );
 //    writeFile( new PCGRandom( new PCG32()), "p32r.dat", 1L<<25 );

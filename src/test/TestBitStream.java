@@ -11,12 +11,18 @@ public class TestBitStream
   {
   }
 
-
-  public static void testIntegerSourceBitStream()
+  public static void intSource()
   {
-//  BitStream bs = IntegerSourceBitStream.create();
-  BitStream bs = IntegerSourceBitStream.create( 32 );
-  
+    testIntegerSourceBitStream( IntegerSourceBitStream.create( 32 ));
+  }
+
+  public static void bigIntSource()
+  {
+    testIntegerSourceBitStream( IntegerSourceBitStream.create());
+  }
+
+  public static void testIntegerSourceBitStream( BitStream bs )
+  {
     for (int i=1; i<32; i++)
     {
 System.out.print( "" + i + ": " );
