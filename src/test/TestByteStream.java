@@ -11,10 +11,10 @@ public class TestByteStream
 
   public static void testIntegerSourceByteStream()
   {
-  ByteStream bs = IntegerSourceByteStream.create();
+  ByteStream bs = IntegerSourceByteStream.create();  // unlimited BigInteger version
 
     for (int i=0; i<256; i++)
-      System.out.print ( " " + bs.next() );
+      System.out.print ( " " + bs.next() + "," ); // 0 ..
 
     System.out.println();
 
@@ -22,7 +22,7 @@ public class TestByteStream
     {
     long out = bs.next( 2 );
 
-      if (i < 100) System.out.print ( " " + out );
+      if (i < 100) System.out.print ( " " + out + "," ); // 256 .. 
     }
 
     System.out.println();
@@ -31,7 +31,7 @@ public class TestByteStream
     {
     long out = bs.next( 3 );
 
-      if (i<100) System.out.print ( " " + out );
+      if (i<100) System.out.print ( " " + out + "," ); // 65536 ..
     }
 
     System.out.println();
@@ -40,7 +40,7 @@ public class TestByteStream
     {
     long out = bs.next( 4 );
 
-      if (i<100) System.out.print ( " " + out );
+      if (i<100) System.out.print ( " " + out + "," ); // 16777216 ..
     }
 
     System.out.println();
@@ -49,7 +49,7 @@ public class TestByteStream
     {
     long out = bs.next( 5 );
 
-      if (i<100) System.out.print ( " " + out );
+      if (i<100) System.out.print ( " " + out + "," ); // 4294967296 ..
     }
 
     System.out.println();

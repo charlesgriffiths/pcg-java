@@ -15,7 +15,8 @@ public class TestRandom
 {
   public static void main( String[] args )
   {
-    TestByteStream.testIntegerSourceByteStream();
+    TestRNG.testIntegerSourceRNG();
+//    TestByteStream.testIntegerSourceByteStream();
 //    TestBitStream.intSource();
 //    simpleTests();
 //    writeFile( new Random(), "jr.dat", 1L<<25 );

@@ -1,6 +1,7 @@
 package rngtools;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 
 abstract public class IntegerSourceRNG extends RNG
@@ -50,7 +51,7 @@ protected byte state;
   @Override
   protected long nextBlock()
   {
-    return state++;
+    return state++ & 0xff;
   }
 
 
@@ -84,7 +85,7 @@ protected short state;
   @Override
   protected long nextBlock()
   {
-    return state++;
+    return state++ & 0xffff;
   }
 
 
@@ -118,7 +119,7 @@ protected int state;
   @Override
   protected long nextBlock()
   {
-    return state++;
+    return state++ & 0xffffffff;
   }
 
 
@@ -177,8 +178,8 @@ protected BigInteger state, max;
   BigIntegerRNGEntire( int stateSize )
   {
     this.stateSize = stateSize;
-    state = BigInteger.ONE;
-    max = TWO.pow( stateSize ).subtract( BigInteger.ONE );
+    state = BigInteger.ZERO;
+    max = TWO.pow( stateSize * 8 ).subtract( BigInteger.ONE );
   }
 
 
@@ -222,6 +223,9 @@ protected BigInteger state, max;
 
     state = state.add( BigInteger.ONE ).and( max );
 
+    if (0 == ret[0] && ret.length > 1)
+      ret = Arrays.copyOfRange( ret, 1, ret.length );
+
     return ret;
   }
 
@@ -232,3 +236,4 @@ protected BigInteger state, max;
     return new BigIntegerRNGEntire( stateSize, state, max );
   }
 }
+
