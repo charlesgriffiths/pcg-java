@@ -14,6 +14,12 @@ abstract public class IntegerSourceBitStream extends BitStream
   }
 
 
+  public static IntegerSourceBitStream createAdder( int addPower )
+  {
+    return new BigIntegerBitStreamBitwiseAdder( addPower );
+  }
+
+
   public static IntegerSourceBitStream create( int maxBits )
   {
     if (32==maxBits)
@@ -112,8 +118,6 @@ protected int position = 0;
 
   BigIntegerBitStream()
   {
-//    advanceState();
-//    state = BigInteger.ZERO;
   }
 
 
@@ -174,54 +178,61 @@ protected int maxPosition = 1;
 }
 
 
-
-/*
-class BigIntegerRNGSource extends SeekableRNG
+// this rng has a bias toward '1' bits
+class BigIntegerBitStreamBitwiseAdder extends BigIntegerBitStream
 {
-final BigInteger TWO = BigInteger.valueOf( 2 );
-BigInteger state;
-int position = 0;  // an infinitely long period would require a BigInteger position and infinite memory
+protected BigInteger count = BigInteger.ZERO, add, max;
+protected int maxPosition = 1, addPower;
 
-
+  BigIntegerBitStreamBitwiseAdder( int addPower )
+  {
+    this.addPower = addPower;
+    add = BigInteger.valueOf( addPower );
+    max = BigInteger.valueOf( 2 ).pow( maxPosition ).subtract( BigInteger.ONE );
+  }
   
 
-
-  // this version of advance produces many bits while advancing the size of state
-  // quite slowly, but it is only one variation and perhaps not the best
-  @Override
-  public void advance( long amount )
+  BigIntegerBitStreamBitwiseAdder( BigInteger state, int position, BigInteger count, int maxPosition, BigInteger add, int addPower )
   {
-    if (amount > position)
-    {
-      amount -= position;
-    }
-    else
-    {
-      position -= amount;
-      amount = 0;
-    }
-
-    while (amount > 0)
-    {
-    int size = state.bitLength();
-    BigInteger biAmount = BigInteger.valueOf( amount );
-    BigInteger biggerState = TWO.pow( size ), distance = biggerState.subtract( state );
-
-      if (distance.compareTo( biAmount ) >= 0)
-      {
-        amount = 0;
-        state.add( biAmount );
-      }
-      else
-      {
-        amount -= distance.longValue();
-        state = biggerState;
-      }
-    }
+    super( state, position );
+    this.count = count;
+    this.maxPosition = maxPosition;
+    this.add = add;
+    this.addPower = addPower;
+    max = BigInteger.valueOf( 2 ).pow( maxPosition ).subtract( BigInteger.ONE );
   }
 
 
-  
-  
+  protected void adjustAdd( BigInteger target )
+  {
+    while( target.compareTo( add ) > 0)
+      add = add.multiply( BigInteger.valueOf( addPower ));
+  }
+
+
+  @Override
+  void advanceState()
+  {
+    count = count.add( BigInteger.ONE );
+
+    if (count.testBit( maxPosition ))
+    {
+      adjustAdd( max );
+      count = BigInteger.ZERO;
+      maxPosition++;
+      max = BigInteger.valueOf( 2 ).pow( maxPosition ).subtract( BigInteger.ONE );
+    }
+
+    state = state.add( add ).and( max );
+
+    position = maxPosition-1;
+  }
+
+
+  @Override
+  public IBitStream deepCopy()
+  {
+    return new BigIntegerBitStreamBitwiseAdder( state, position, count, maxPosition, add, addPower );
+  }
 }
-*/
+

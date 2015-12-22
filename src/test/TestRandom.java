@@ -8,14 +8,21 @@ import java.util.Random;
 
 import pcg.PCG64;
 import pcg.SKRandom;
+import rngtools.BitStream;
+import rngtools.IntegerSourceBitStream;
+import rngtools.PermutedRNG;
 import rngtools.RNG;
+import rngtools.SkewCorrectionFilter;
 
 
 public class TestRandom
 {
   public static void main( String[] args )
   {
-    TestRNG.testIntegerSourceRNG();
+    runEntSimple( new Random(), 100000 );
+    runEntSimple( new SKRandom( PermutedRNG.createXORShift( RNG.create( new SkewCorrectionFilter( IntegerSourceBitStream.create())), 8, 4 )), 100000 );
+    runEntSimple( new SKRandom( PermutedRNG.createXORShift( RNG.create( new SkewCorrectionFilter( IntegerSourceBitStream.createAdder( 3 ))), 8, 4 )), 100000 );
+//    TestRNG.testIntegerSourceRNG();
 //    TestByteStream.testIntegerSourceByteStream();
 //    TestBitStream.intSource();
 //    simpleTests();
@@ -82,6 +89,22 @@ System.out.println( ep.getEstimate() + " " + ep.getEstimate()/Math.PI + " " + Ma
     }
 
 System.out.println( "* " + ep1.getEstimate()/Math.PI + "   " + ep2.getEstimate()/Math.PI + "   " + Math.PI );
+  }
+
+
+  public static void runEntSimple( Random rng, int count )
+  {
+  Ent e = new Ent();
+  byte b[] = new byte[1];
+
+    for (int i=0; i<count; i++)
+    {
+      rng.nextBytes( b );
+      e.addBytes( b );
+    }
+
+    e.finish();
+    System.out.println( e );
   }
 
 

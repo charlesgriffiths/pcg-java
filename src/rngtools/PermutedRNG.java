@@ -48,16 +48,6 @@ protected int inputByteAmount, outputByteAmount;
 
 
   @Override
-  public long nextl( int bits )
-  {
-    if (bits <= 32)
-      return next( bits ) | 0L;
-
-    return ((nextl( 32 ) << 32) | nextl( 32 )) >>> (64-bits);
-  }
-
-
-  @Override
   protected IRNG deepCopy( IRNG target )
   {
     if (target instanceof PermutedRNG)
@@ -99,7 +89,10 @@ class XORShiftRNG_64_32 extends PermutedRNG
   long input = source.nextl( 64 );
 
 //this particular 64b to 32b shift-rotation from https://github.com/imneme/pcg-cpp/blob/master/include/pcg_random.hpp
-    return Integer.rotateRight( (int) (((input >>> 18) ^ input) >>> 27), (int) (input >>> 59) );
+//    return Integer.rotateRight( (int) (((input >>> 18) ^ input) >>> 27), (int) (input >>> 59) );
+  
+// this shift-rotation does not give preference to higher-order bits
+    return Integer.rotateRight( (int) ((input >>> 32) ^ input), (int) (input >>> 29) % 32 );
   }
 
 
