@@ -17,7 +17,7 @@ import rngtools.SkewCorrectionFilter;
 
 public class TestRandom
 {
-  public static void main( String[] args )
+  public static void main( String args[] )
   {
     runEntSimple( new Random(), 100000 );
     runEntSimple( new SKRandom( PermutedRNG.createXORShift( RNG.create( new SkewCorrectionFilter( IntegerSourceBitStream.create())), 8, 4 )), 100000 );
